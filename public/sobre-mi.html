@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Sobre mí — Jesús Avendaño | Valkyria Coaching</title>
+  <meta name="description" content="Coach en powerlifting. Metodología individualizada por bloques. Lima, Perú.">
+  <meta name="author" content="Valkyria">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sobre mí — Jesús Avendaño | Valkyria">
+  <meta property="og:description" content="Atleta y coach. Compito y enseño con el mismo método.">
+  <meta property="og:type" content="website">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://valkyria.pe/sobre-mi.html">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    /* === ESTILOS ESPECÍFICOS — SOBRE MÍ === */
+
+    /* Botón volver en nav */ 
+    .nav-back {
+      border: 1px solid var(--border2);
+      color: var(--gray);
+      padding: 10px 22px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.2s;
+    }
+    .nav-back:hover {
+      border-color: var(--orange);
+      color: var(--white);
+    }
+
+    /* === HERO === */
+    #sm-hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 60fr 30fr;
+      align-items: center;
+      padding: 130px 64px 80px;
+      gap: 64px;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .sm-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 65% at 0% 55%, rgba(255, 69, 0, 0.11) 0%, transparent 60%),
+        var(--black);
+      pointer-events: none;
+    }
+
+    .sm-hero-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image:
+        linear-gradient(#2a2a2a 1px, transparent 1px),
+        linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    .sm-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .sm-eyebrow {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .sm-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .sm-name {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 7.5vw, 108px);
+      line-height: 0.88;
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+    }
+    .sm-name span {
+      color: var(--orange);
+      display: block;
+    }
+
+    .sm-tagline {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.8;
+      max-width: 460px;
+      margin-bottom: 36px;
+    }
+    .sm-tagline strong { color: var(--white); }
+
+    .sm-stats {
+      display: flex;
+      gap: 36px;
+      margin-bottom: 44px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border2);
+      flex-wrap: wrap;
+    }
+    .sm-stat-item { display: flex; flex-direction: column; gap: 5px; }
+    .sm-stat-n {
+      font-family: var(--font-display);
+      font-size: 26px;
+      color: var(--white);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .sm-stat-l {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray);
+    }
+
+    /* Foto hero */
+    .sm-photo-wrap {
+      position: relative;
+      z-index: 2;
+      height: 640px;
+    }
+
+    .sm-photo {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%);
+      background:
+        url('assets/foto-hero.jpg') center center / cover no-repeat,
+        linear-gradient(135deg, #181818 0%, #111 100%);
+    }
+
+    .sm-photo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--black) 0%, transparent 35%);
+      z-index: 1;
+    }
+
+    .sm-photo-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 0;
+    }
+    .sm-photo-placeholder span {
+      font-family: var(--font-display);
+      font-size: 140px;
+      opacity: 0.05;
+      color: var(--orange);
+      letter-spacing: 6px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .sm-photo-label {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2;
+      background: rgba(8, 8, 8, 0.88);
+      border: 1px solid var(--border2);
+      border-left: 2px solid var(--orange);
+      padding: 10px 16px;
+    }
+    .sm-photo-label strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .sm-photo-label span {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    /* === MI HISTORIA === */
+    #historia { background: var(--dark); }
+
+    .historia-inner {
+      max-width: 740px;
+      margin-top: 48px;
+    }
+    .historia-inner p {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--gray);
+      margin-bottom: 24px;
+    }
+    .historia-inner p strong { color: var(--white); }
+    .historia-inner p:first-child {
+      font-size: 18px;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    /* === MI FILOSOFÍA === */
+    #filosofia { background: var(--black); }
+
+    .filosofia-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+    }
+
+    .filo-card {
+      background: var(--card);
+      border-top: 2px solid var(--border2);
+      padding: 44px 36px;
+      transition: border-color 0.25s;
+    }
+    .filo-card:hover { border-color: var(--orange); }
+
+    .filo-n {
+      font-family: var(--font-display);
+      font-size: 52px;
+      color: var(--border2);
+      line-height: 1;
+      margin-bottom: 20px;
+      transition: color 0.25s;
+    }
+    .filo-card:hover .filo-n { color: var(--orange); }
+
+    .filo-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+    .filo-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    /* === TIMELINE === */
+    #timeline { background: var(--black); }
+
+    .timeline {
+      position: relative;
+      margin-top: 56px;
+      padding-left: 36px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border2);
+    }
+
+    .tl-item {
+      position: relative;
+      padding-bottom: 44px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -40px;
+      top: 6px;
+      width: 8px;
+      height: 8px;
+      background: var(--orange);
+      clip-path: polygon(2px 0%, 100% 0%, calc(100% - 2px) 100%, 0% 100%);
+    }
+    .tl-year {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 4px;
+    }
+    .tl-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .tl-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.75;
+      max-width: 580px;
+    }
+
+    /* === RECORDS === */
+    #records { background: var(--dark); }
+
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 48px;
+      font-size: 14px;
+    }
+    .records-table thead tr {
+      border-bottom: 1px solid var(--border2);
+    }
+    .records-table th {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray);
+      padding: 10px 16px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .records-table td {
+      padding: 16px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--gray);
+    }
+    .records-table td:first-child { color: var(--white); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .records-table td:last-child  { color: var(--orange); font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; }
+    .records-table .rec-total td:last-child { color: var(--gold); font-size: 22px; }
+
+    @media (max-width: 960px) {
+      .records-table th, .records-table td { padding: 12px 10px; }
+    }
+
+    /* === LOGROS === */
+    #logros { background: var(--dark); }
+
+    .logros-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 56px;
+    }
+
+    .logro-card {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s;
+    }
+    .logro-card:hover { border-color: var(--orange); }
+
+    .logro-year {
+      font-family: var(--font-display);
+      font-size: 64px;
+      color: var(--border2);
+      line-height: 1;
+      margin-bottom: 4px;
+      transition: color 0.25s;
+    }
+    .logro-card:hover .logro-year { color: var(--orange); opacity: 0.25; }
+
+    .logro-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+
+    .logro-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      letter-spacing: 1px;
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .logro-detail {
+      font-size: 12px;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    .logro-mark {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 28px;
+      height: 28px;
+      background: var(--orange);
+      clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    @media (max-width: 960px) {
+      .logros-grid { grid-template-columns: 1fr; }
+    }
+
+    /* === CTA CONTACTO === */
+    .sm-cta {
+      background: var(--dark);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 80px 64px;
+      text-align: center;
+    }
+    .sm-cta .s-title { margin: 12px 0 20px; }
+    .sm-cta p {
+      font-size: 14px;
+      color: var(--gray);
+      max-width: 400px;
+      margin: 0 auto 36px;
+      line-height: 1.75;
+    }
+    .sm-cta p strong { color: var(--white); }
+    .sm-cta .cta-btns { justify-content: center; }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 960px) {
+      #sm-hero {
+        grid-template-columns: 1fr;
+        padding: 110px 24px 60px;
+        gap: 48px;
+      }
+      .sm-photo-wrap { height: 420px; order: -1; }
+      .sm-photo { clip-path: none; }
+      .filosofia-grid { grid-template-columns: 1fr; }
+      .sm-cta { padding: 56px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor personalizado -->
+  <div class="cur"      id="cur"  aria-hidden="true"></div>
+  <div class="cur-ring" id="ring" aria-hidden="true"></div>
+
+  <!-- Menú mobile -->
+  <nav id="mobileMenu" class="nav-mobile-menu" aria-label="Menú principal" aria-hidden="true">
+    <a href="index.html#metodo"   aria-label="Ir a Método">Método</a>
+    <a href="index.html#coaching" aria-label="Ir a Coaching">Coaching</a>
+    <a href="tienda.html"         aria-label="Ir a Tienda">Tienda</a>
+    <a href="index.html#proceso"  aria-label="Ir a Proceso">Proceso</a>
+    <a href="sobre-mi.html" aria-label="Ir a Sobre mí">Sobre mí</a>
+    <a href="index.html" class="btn-p" style="margin-top:16px">← Volver al inicio</a>
+  </nav>
+
+  <!-- ── NAV ──────────────────────────────────────────────── -->
+  <header>
+    <nav id="nav" aria-label="Navegación principal">
+      <a href="index.html" class="nav-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="index.html#metodo">Método</a></li>
+        <li><a href="index.html#coaching">Coaching</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="index.html#proceso">Proceso</a></li>
+        <li><a href="sobre-mi.html" aria-current="page">Sobre mí</a></li>
+      </ul>
+
+      <a href="index.html#coaching" class="nav-cta">Quiero coaching</a>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section id="sm-hero" aria-label="Sobre mí">
+    <div class="sm-hero-bg"  aria-hidden="true"></div>
+    <div class="sm-hero-grid" aria-hidden="true"></div>
+
+    <div class="sm-content">
+      <p class="sm-eyebrow">Valkyria — Coach en Powerlifting</p>
+
+      <h1 class="sm-name">
+        JESÚS<br>
+        <span>AVENDAÑO</span>
+      </h1>
+
+      <p class="sm-tagline">
+        <strong>Atleta y coach.</strong> Compito y enseño con el mismo método — porque la mejor forma de entender el entrenamiento es vivirlo desde adentro.
+      </p>
+
+      <div class="sm-stats">
+        <div class="sm-stat-item">
+          <span class="sm-stat-n">-74 kg</span>
+          <span class="sm-stat-l">Categoría</span>
+        </div>
+        <div class="sm-stat-item">
+          <span class="sm-stat-n">FDNLP</span>
+          <span class="sm-stat-l">Federación</span>
+        </div>
+        <div class="sm-stat-item">
+          <span class="sm-stat-n">Lima</span>
+          <span class="sm-stat-l">Perú · Online</span>
+        </div>
+      </div>
+
+      <a href="index.html#coaching" class="btn-p">Ver coaching →</a>
+    </div>
+
+    <div class="sm-photo-wrap" aria-hidden="true">
+      <div class="sm-photo">
+        <div class="sm-photo-placeholder"><span>VLK</span></div>
+        <div class="sm-photo-label">
+          <strong>FDNLP 2025</strong>
+          <span>Campeonato regional</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MI HISTORIA ──────────────────────────────────────── -->
+  <section id="historia" class="method" aria-labelledby="title-historia">
+    <p class="s-label">Trayectoria</p>
+    <h2 class="s-title reveal" id="title-historia">MI<br>HISTORIA.</h2>
+
+    <div class="historia-inner reveal">
+      <p>
+        Empecé en el powerlifting como muchos: con miedo, con ganas pero sin saber bien cómo. Quería levantar pesado, quería mejorar, pero no entendía el por qué detrás de cada decisión de entrenamiento. Eso me generó frustraciones, estancamientos y más de una vez ganas de dejarlo.
+      </p>
+      <p>
+        Hoy sigo siendo atleta. Compito, me preparo y sigo aprendiendo. Pero también soy coach, y esa parte me nació de algo genuino: el amor por ayudar. No fue una decisión de negocios — fue darme cuenta de que podía hacer por otros lo que nadie hizo por mí cuando empecé.
+      </p>
+      <p>
+        En 2025 competí por primera vez a nivel regional. Fue un proceso difícil, con cosas personales que no ayudaban, pero subí a la plataforma y estoy orgulloso de eso. Ese año también empecé a entrenar a mis primeros atletas, con la convicción de que cada persona merece encontrar su mejor versión dentro del deporte.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── TIMELINE ─────────────────────────────────────────── -->
+  <section id="timeline" class="method" aria-labelledby="title-timeline">
+    <p class="s-label">Trayectoria</p>
+    <h2 class="s-title reveal" id="title-timeline">EL CAMINO<br>HASTA AQUÍ.</h2>
+
+    <div class="timeline">
+
+      <div class="tl-item reveal">
+        <p class="tl-year">2023</p>
+        <p class="tl-title">El primer fuego</p>
+        <p class="tl-desc">Primer sentadilla de 120 kg con mala técnica, mucho ego y poca idea. Pero algo se encendió ahí adentro — ese pequeño fuego no se apagó más.</p>
+      </div>
+
+      <div class="tl-item reveal">
+        <p class="tl-year">2025</p>
+        <p class="tl-title">Primera competencia regional</p>
+        <p class="tl-desc">Un año difícil en lo personal. Aun así subí a la plataforma, competí y aprendí más de esa experiencia que de cualquier sesión de entrenamiento. Orgulloso de haberlo hecho.</p>
+      </div>
+
+      <div class="tl-item reveal">
+        <p class="tl-year">2026</p>
+        <p class="tl-title">Nace Valkyria</p>
+        <p class="tl-desc">Las valquirias elegían a los guerreros dignos de entrar al Valhalla. Ese nombre no fue casualidad: el trabajo con cada atleta empieza por mérito, compromiso y convicción. Valkyria nació para eso.</p>
+      </div>
+
+      <div class="tl-item reveal">
+        <p class="tl-year">Hoy</p>
+        <p class="tl-title">Compito y enseño con el mismo método</p>
+        <p class="tl-desc">Atleta en activo y coach. Cada temporada en plataforma es también una prueba del método que les pido a mis atletas que sigan.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── MI FILOSOFÍA ─────────────────────────────────────── -->
+  <section id="filosofia" class="method" aria-labelledby="title-filosofia">
+    <p class="s-label">Lo que me mueve</p>
+    <h2 class="s-title reveal" id="title-filosofia">MI<br>FILOSOFÍA.</h2>
+
+    <div class="filosofia-grid">
+
+      <article class="filo-card reveal">
+        <div class="filo-n">01</div>
+        <h3 class="filo-title">EL MÉTODO ES PERSONAL</h3>
+        <p class="filo-desc">No existen plantillas universales. Antes de programar, entiendo cómo vives, cómo duermes, cómo respondes al volumen y a la intensidad. Cada serie tiene un por qué, y tienes que entenderlo.</p>
+      </article>
+
+      <article class="filo-card reveal">
+        <div class="filo-n">02</div>
+        <h3 class="filo-title">LA FUERZA SE GANA</h3>
+        <p class="filo-desc">El progreso real lleva tiempo. No hay atajos, no hay trucos. Entrenamos para el largo plazo, con paciencia y con honestidad frente al proceso.</p>
+      </article>
+
+      <article class="filo-card reveal">
+        <div class="filo-n">03</div>
+        <h3 class="filo-title">POCOS ATLETAS, ACOMPAÑAMIENTO REAL</h3>
+        <p class="filo-desc">No trabajo con muchos atletas a la vez porque no me interesa la cantidad. Me interesa hacer bien el trabajo: revisión de videos, comunicación constante y presencia real en cada etapa del proceso.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── LOGROS ───────────────────────────────────────────── -->
+  <section id="logros" class="method" aria-labelledby="title-logros">
+    <p class="s-label">Competencias</p>
+    <h2 class="s-title reveal" id="title-logros">LOGROS<br>EN PLATAFORMA.</h2>
+
+    <div class="logros-grid">
+
+      <article class="logro-card reveal">
+        <div class="logro-mark">—</div>
+        <div class="logro-year">—</div>
+        <p class="logro-tag">Powerlifting</p>
+        <p class="logro-title">Próximamente</p>
+      </article>
+
+      <article class="logro-card reveal">
+        <div class="logro-mark">—</div>
+        <div class="logro-year">—</div>
+        <p class="logro-tag">Powerlifting</p>
+        <p class="logro-title">Próximamente</p>
+      </article>
+
+      <article class="logro-card reveal">
+        <div class="logro-mark">→</div>
+        <div class="logro-year">2026</div>
+        <p class="logro-tag">Próxima competencia</p>
+        <p class="logro-title">Próximamente</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <div class="sm-cta" aria-label="Contacto">
+    <p class="s-label" style="justify-content:center;">Trabajemos juntos</p>
+    <h2 class="s-title">¿QUIERES QUE<br><span style="color:var(--orange)">ARRANQUEMOS?</span></h2>
+    <p>Primera consulta <strong>sin costo</strong>. Si hay lugar disponible, empezamos esta semana.</p>
+    <div class="cta-btns">
+      <a href="index.html#coaching" class="btn-p">
+        Ver plan de coaching →
+      </a>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <a href="index.html" class="f-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+    <nav class="f-links" aria-label="Links del footer">
+      <a href="index.html#metodo">Método</a>
+      <a href="index.html#coaching">Coaching</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="index.html#proceso">Proceso</a>
+      <a href="sobre-mi.html" aria-current="page">Sobre mí</a>
+    </nav>
+
+    <p class="f-copy">© 2025 Valkyria — Fuerza con argumento.</p>
+
+    <div class="f-social" aria-label="Redes sociales">
+      <a href="#" class="fsoc" aria-label="Instagram de Valkyria">IG</a>
+      <a href="#" class="fsoc" aria-label="TikTok de Valkyria">TK</a>
+      <a href="#" class="fsoc" aria-label="YouTube de Valkyria">YT</a>
+    </div>
+  </footer>
+
+  <!-- Botón flotante WhatsApp -->
+  <a href="https://wa.me/51955577054?text=Hola%2C%20quiero%20info%20sobre%20el%20coaching%20Valkyria"
+     class="fab-wa"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Contactar por WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

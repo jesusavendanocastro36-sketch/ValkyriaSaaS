@@ -1,0 +1,426 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String          @id @default(cuid())
+  email            String          @unique
+  password         String
+  nombre           String
+  rol              UserRole
+  activo           Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  athleteProfile   AthleteProfile?
+  coachProfile     CoachProfile?
+  mensajesEnviados Mensaje[]       @relation("MensajeSender")
+}
+
+model CoachProfile {
+  id              String                @id @default(cuid())
+  userId          String                @unique
+  experienciaAnos Int?
+  especialidades  String[]
+  imagenPerfil    String?
+  telefono        String?
+  ubicacion       String?
+  biografia       String?
+  createdAt       DateTime              @default(now())
+  athletes        AthleteProfile[]
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ejercicios      EjercicioBiblioteca[]
+  invites         InviteToken[]
+  periodizaciones Periodizacion[]
+  recomendaciones RecomendacionAI[]
+}
+
+model AthleteProfile {
+  id                      String              @id @default(cuid())
+  userId                  String              @unique
+  coachId                 String
+  pesoActual              Float?
+  altura                  Float?
+  edad                    Int?
+  categoriaPeso           String?
+  experienciaPowerlifting String              @default("principiante")
+  lesionesActuales        String[]
+  objetivos               String[]
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+  rmBench                 Float?
+  rmDeadlift              Float?
+  rmSquat                 Float?
+  equipamiento            String[]
+  diasDisponibles         String[]
+  bpMav                   Int?
+  bpMev                   Int?
+  bpMrv                   Int?
+  dlMav                   Int?
+  dlMev                   Int?
+  dlMrv                   Int?
+  sqMav                   Int?
+  sqMev                   Int?
+  sqMrv                   Int?
+  coach                   CoachProfile        @relation(fields: [coachId], references: [id])
+  user                    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mensajes                Mensaje[]
+  notasSesion             NotaSesion[]
+  periodizaciones         Periodizacion[]
+  pesoHistorial           PesoHistorial[]
+  recomendaciones         RecomendacionAI[]
+  seguimiento             SeguimientoAtleta[]
+}
+
+model Periodizacion {
+  id               String                @id @default(cuid())
+  coachId          String
+  athleteId        String
+  nombre           String
+  tipo             TipoPeriodizacion
+  fechaInicio      DateTime
+  fechaFin         DateTime
+  duracionSemanas  Int
+  objetivo         String
+  descripcion      String?
+  estado           EstadoPeriodizacion   @default(DRAFT)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  progresionPct    Json?
+  fechaCompetencia DateTime?
+  semanaMaxVisible Int?
+  bloques          BloqueEntrenamiento[]
+  fasesBasico      FaseBasico[]
+  athlete          AthleteProfile        @relation(fields: [athleteId], references: [id])
+  coach            CoachProfile          @relation(fields: [coachId], references: [id])
+  recomendaciones  RecomendacionAI[]
+}
+
+model BloqueEntrenamiento {
+  id               String                @id @default(cuid())
+  periodizacionId  String
+  numeroBloque     Int
+  nombre           String
+  semanaInicio     Int
+  semanaFin        Int
+  enfasis          String
+  intensidadRpeMin Float
+  intensidadRpeMax Float
+  volumenRepsMin   Int?
+  volumenRepsMax   Int?
+  createdAt        DateTime              @default(now())
+  periodizacion    Periodizacion         @relation(fields: [periodizacionId], references: [id], onDelete: Cascade)
+  sesiones         SesionEntrenamiento[]
+}
+
+model SesionEntrenamiento {
+  id                  String              @id @default(cuid())
+  bloqueId            String
+  numeroSemana        Int
+  diaSemana           String
+  fecha               DateTime?
+  movimientoPrincipal String
+  enfocuoDia          String
+  descripcion         String?
+  ordenSecuencia      Int?
+  bloqueado           Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+  ejercicios          EjercicioSesion[]
+  bloque              BloqueEntrenamiento @relation(fields: [bloqueId], references: [id], onDelete: Cascade)
+}
+
+model EjercicioSesion {
+  id              String              @id @default(cuid())
+  sesionId        String
+  ejercicioNombre String
+  tipoEjercicio   TipoEjercicio
+  setsProgramados Int
+  repsProgramadas Int
+  rpeProgramado   Float
+  pesoProgramado  Float?
+  restMinutos     Int                 @default(3)
+  notasTecnicas   String?
+  orden           Int
+  createdAt       DateTime            @default(now())
+  cargaRef        String?
+  ordenGrupo      String?
+  rirLabel        String?
+  videoUrl        String?
+  sesion          SesionEntrenamiento @relation(fields: [sesionId], references: [id], onDelete: Cascade)
+  seguimiento     SeguimientoAtleta[]
+}
+
+model SeguimientoAtleta {
+  id                String          @id @default(cuid())
+  ejercicioSesionId String
+  athleteId         String
+  fechaRealizacion  DateTime
+  numeroSet         Int
+  repsRealizadas    Int
+  pesoUsado         Float
+  rpeReportado      Float
+  completado        Boolean         @default(true)
+  notasAtleta       String?
+  createdAt         DateTime        @default(now())
+  athlete           AthleteProfile  @relation(fields: [athleteId], references: [id])
+  ejercicioSesion   EjercicioSesion @relation(fields: [ejercicioSesionId], references: [id])
+}
+
+model NotaSesion {
+  id        String         @id @default(cuid())
+  athleteId String
+  sesionId  String
+  fecha     DateTime       @default(now())
+  contenido String
+  athlete   AthleteProfile @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@index([athleteId, fecha])
+}
+
+model PesoHistorial {
+  id        String         @id @default(cuid())
+  athleteId String
+  peso      Float
+  fecha     DateTime       @default(now())
+  nota      String?
+  createdAt DateTime       @default(now())
+  athlete   AthleteProfile @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@index([athleteId, fecha])
+}
+
+model EjercicioBiblioteca {
+  id               String                @id @default(cuid())
+  coachId          String
+  nombre           String
+  categoria        TipoEjercicio
+  gruposMusculares String[]
+  musculosSecundarios String[]           @default([])
+  descripcion      String?
+  cuesTecnicos     String[]
+  notasSeguridad   String?
+  videoUrl         String?
+  equipamientoReq  String[]
+  createdAt        DateTime              @default(now())
+  parentId         String?
+  coach            CoachProfile          @relation(fields: [coachId], references: [id])
+  parent           EjercicioBiblioteca?  @relation("EjercicioVariantes", fields: [parentId], references: [id], onDelete: Cascade)
+  variantes        EjercicioBiblioteca[] @relation("EjercicioVariantes")
+
+  @@unique([coachId, nombre])
+}
+
+model RecomendacionAI {
+  id                   String              @id @default(cuid())
+  coachId              String
+  athleteId            String
+  periodizacionId      String?
+  tipo                 TipoRecomendacion
+  descripcion          String
+  razonGenerada        String?
+  ejercicioAlternativo String?
+  parametrosSugeridos  Json?
+  estado               EstadoRecomendacion @default(PENDIENTE)
+  createdAt            DateTime            @default(now())
+  actualizadoEn        DateTime            @updatedAt
+  athlete              AthleteProfile      @relation(fields: [athleteId], references: [id])
+  coach                CoachProfile        @relation(fields: [coachId], references: [id])
+  periodizacion        Periodizacion?      @relation(fields: [periodizacionId], references: [id])
+}
+
+model EjercicioRV {
+  id                 String   @id @default(cuid())
+  externalId         String   @unique
+  nombre             String
+  altNombre          String?
+  movimiento         String
+  tipo               String
+  rank               String
+  bloquesIdeal       String[]
+  musculosObjetivo   String[]
+  transferencia      Int
+  tecnicaClave       String
+  cuandoUsarlo       String
+  erroresComunes     String
+  cargaRecomendada   String
+  seriesRecomendadas String
+  referencia         String?
+  videoUrl           String?
+  notasCoach         String?
+  createdAt          DateTime @default(now())
+}
+
+model ProtocoloRV {
+  id           String   @id @default(cuid())
+  externalId   String   @unique
+  nombre       String
+  subtitulo    String?
+  categoria    String
+  bloques      String[]
+  nivel        String
+  descripcion  String
+  objetivo     String
+  cuandoUsarlo String
+  comoEjecutar String
+  errores      String
+  ejemplo      String
+  advertencia  String
+  progresion   Json
+  createdAt    DateTime @default(now())
+}
+
+model InviteToken {
+  id        String       @id @default(cuid())
+  token     String       @unique
+  coachId   String
+  usedAt    DateTime?
+  expiresAt DateTime
+  createdAt DateTime     @default(now())
+  coach     CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+}
+
+model Mensaje {
+  id        String         @id @default(cuid())
+  senderId  String
+  athleteId String
+  contenido String
+  tipo      TipoMensaje    @default(TEXTO)
+  leido     Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  athlete   AthleteProfile @relation(fields: [athleteId], references: [id])
+  sender    User           @relation("MensajeSender", fields: [senderId], references: [id])
+}
+
+model admin_users {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String    @unique
+  password_hash String
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model products {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String    @unique
+  name        String
+  description String    @default("")
+  category    String
+  price       Int
+  stock       Int       @default(0)
+  sizes       String[]  @default([])
+  img_text    String    @default("VLK")
+  wa_message  String    @default("")
+  badge       String?
+  badge_type  String?   @default("orange")
+  details     Json?     @default("{}")
+  active      Boolean   @default(true)
+  sort_order  Int       @default(0)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model site_config {
+  key        String    @id
+  value      String
+  label      String    @default("")
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model testimonials {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  role       String    @default("")
+  quote      String
+  result     String?   @default("")
+  active     Boolean   @default(true)
+  sort_order Int       @default(0)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+enum UserRole {
+  ADMIN
+  ATHLETE
+}
+
+enum TipoPeriodizacion {
+  LINEAL
+  ONDULANTE
+  CONJUGADA
+  POR_BLOQUES
+}
+
+enum EstadoPeriodizacion {
+  DRAFT
+  ACTIVE
+  COMPLETED
+}
+
+enum TipoEjercicio {
+  COMPETITIVO
+  VARIANTE
+  ACCESORIO
+  MOVILIDAD
+  AUXILIAR
+  COMPENSATORIO
+}
+
+enum TipoRecomendacion {
+  AJUSTE_RPE
+  CAMBIO_VOLUMEN
+  CAMBIO_EJERCICIO
+  RECUPERACION
+  MOVILIDAD
+  TECNICA
+}
+
+enum EstadoRecomendacion {
+  PENDIENTE
+  ACEPTADA
+  RECHAZADA
+}
+
+enum TipoMensaje {
+  TEXTO
+  VIDEO_LINK
+  ARTICULO
+  RECOMENDACION
+}
+
+enum BasicoMovimiento {
+  SENTADILLA
+  PRESS_BANCA
+  PESO_MUERTO
+}
+
+enum BloqueRV {
+  HIPERTROFIA
+  FUERZA_BASE
+  VOLUMEN
+  PEAKING
+  TAPERING
+  DESCARGA
+}
+
+model FaseBasico {
+  id              String           @id @default(cuid())
+  periodizacionId String
+  basico          BasicoMovimiento
+  bloque          BloqueRV
+  semanaInicio    Int
+  semanaFin       Int
+  rpeMin          Float
+  rpeMax          Float
+  porcentajeRmMin Float?
+  porcentajeRmMax Float?
+  repsMin         Int?
+  repsMax         Int?
+  notas           String?
+  createdAt       DateTime         @default(now())
+  periodizacion   Periodizacion    @relation(fields: [periodizacionId], references: [id], onDelete: Cascade)
+
+  @@index([periodizacionId])
+}

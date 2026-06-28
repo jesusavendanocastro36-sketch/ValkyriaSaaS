@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Valkyria</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page-404 {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    .e404-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 55% 55% at 50% 50%, rgba(255, 69, 0, 0.07), transparent);
+      pointer-events: none;
+    }
+
+    .e404-n {
+      font-family: var(--font-display);
+      font-size: clamp(120px, 22vw, 240px);
+      line-height: 0.85;
+      color: var(--orange);
+      opacity: 0.12;
+      user-select: none;
+    }
+
+    .e404-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 5vw, 52px);
+      line-height: 0.95;
+      margin-top: -16px;
+      position: relative;
+    }
+
+    .e404-sub {
+      font-size: 14px;
+      color: var(--gray);
+      margin: 20px 0 40px;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-404">
+    <div class="e404-bg" aria-hidden="true"></div>
+    <div class="e404-n" aria-hidden="true">404</div>
+    <h1 class="e404-title">PÁGINA<br>NO ENCONTRADA.</h1>
+    <p class="e404-sub">Esta URL no existe. Volvé al inicio.</p>
+    <a href="/" class="btn-p">Ir al inicio →</a>
+  </div>
+</body>
+</html>

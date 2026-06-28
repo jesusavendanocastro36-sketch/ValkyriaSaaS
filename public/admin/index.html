@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Valkyria Admin</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange:#FF4500; --gold:#FFB800;
+      --black:#080808;  --dark:#101010;  --card:#141414;
+      --white:#F2EDE4;  --gray:#777;     --border:#1e1e1e; --border2:#2a2a2a;
+      --sidebar:220px;
+      --font-d:'Bebas Neue',sans-serif;
+      --font-b:'Barlow',sans-serif;
+    }
+    body { background:var(--dark); color:var(--white); font-family:var(--font-b); display:flex; min-height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar);
+      background: var(--black);
+      border-right: 1px solid var(--border2);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+    .sb-logo {
+      padding: 28px 24px 20px;
+      font-family: var(--font-d);
+      font-size: 22px;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--border2);
+    }
+    .sb-logo span { color: var(--orange); }
+    .sb-subtitle { font-family: var(--font-b); font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+    .sb-nav { padding: 16px 0; flex: 1; }
+    .sb-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray);
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .sb-link:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+    .sb-link.active { color: var(--orange); border-left: 2px solid var(--orange); }
+    .sb-link svg { flex-shrink: 0; }
+    .sb-footer { padding: 20px 24px; border-top: 1px solid var(--border2); }
+    .sb-user { font-size: 11px; color: var(--gray); margin-bottom: 10px; word-break: break-all; }
+    .sb-logout {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gray); background: none; border: none; cursor: pointer; transition: color 0.2s; padding: 0;
+      font-family: var(--font-b);
+    }
+    .sb-logout:hover { color: var(--orange); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .topbar {
+      background: var(--black);
+      border-bottom: 1px solid var(--border2);
+      padding: 20px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-title { font-family: var(--font-d); font-size: 24px; letter-spacing: 1px; }
+    .topbar-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); background: var(--card); border: 1px solid var(--border2); padding: 4px 12px; }
+    .content { padding: 36px; flex: 1; }
+
+    /* ── CARDS RESUMEN ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-bottom: 36px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border2); padding: 24px 20px; }
+    .stat-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+    .stat-value { font-family: var(--font-d); font-size: 36px; line-height: 1; }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.gold   { color: var(--gold); }
+
+    /* ── SECCIONES ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── TABLA ── */
+    .table-wrap { background: var(--card); border: 1px solid var(--border2); overflow-x: auto; }
+    .adm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .adm-table th {
+      font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
+      padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border2); font-weight: 600;
+    }
+    .adm-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--gray); vertical-align: middle; }
+    .adm-table td:first-child { color: var(--white); font-weight: 600; }
+    .adm-table tr:last-child td { border-bottom: none; }
+    .adm-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── BOTONES ── */
+    .btn { padding: 8px 16px; font-family: var(--font-b); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; }
+    .btn-primary { background: var(--orange); color: var(--black); clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); }
+    .btn-primary:hover { background: var(--gold); }
+    .btn-ghost   { background: none; border: 1px solid var(--border2); color: var(--gray); }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--white); }
+    .btn-danger  { background: none; border: 1px solid #441; color: #f55; font-size: 10px; }
+    .btn-danger:hover { border-color: #f55; }
+    .btn-sm { padding: 5px 10px; font-size: 9px; }
+
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px; border-bottom: 1px solid var(--border2);
+    }
+    .table-header-title { font-family: var(--font-d); font-size: 18px; letter-spacing: 1px; }
+
+    /* ── FORMULARIO MODAL ── */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
+      z-index: 200; display: none; align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-box {
+      background: var(--card); border: 1px solid var(--border2);
+      padding: 36px 40px; width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto; position: relative;
+    }
+    .modal-title { font-family: var(--font-d); font-size: 22px; letter-spacing: 1px; margin-bottom: 24px; }
+    .modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--gray); font-size: 18px; cursor: pointer; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+    .form-field input, .form-field select, .form-field textarea {
+      background: var(--dark); border: 1px solid var(--border2); color: var(--white);
+      padding: 10px 12px; font-family: var(--font-b); font-size: 13px; outline: none; transition: border-color 0.2s;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--orange); }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+    .form-field select option { background: var(--dark); }
+    .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border2); }
+    .form-error { font-size: 12px; color: var(--orange); margin-top: 8px; min-height: 16px; }
+
+    /* ── CONFIG FORM ── */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .config-card { background: var(--card); border: 1px solid var(--border2); padding: 28px 24px; }
+    .config-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-bottom: 6px; }
+    .config-desc { font-size: 11px; color: var(--gray); margin-bottom: 14px; }
+    .config-input {
+      width: 100%; background: var(--dark); border: 1px solid var(--border2); color: var(--white);
+      padding: 11px 14px; font-family: var(--font-b); font-size: 15px; font-weight: 600; outline: none; transition: border-color 0.2s;
+    }
+    .config-input:focus { border-color: var(--orange); }
+    .config-save-wrap { grid-column: 1 / -1; padding: 20px 0 0; display: flex; align-items: center; gap: 16px; }
+    .config-ok { font-size: 11px; color: #4caf50; display: none; }
+    .config-ok.visible { display: block; }
+
+    /* Badge de estado */
+    .badge { display:inline-block; font-size:8px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:3px 8px; }
+    .badge-ok  { background:rgba(76,175,80,0.15); color:#4caf50; border:1px solid #4caf50; }
+    .badge-low { background:rgba(255,184,0,0.12); color:var(--gold); border:1px solid var(--gold); }
+    .badge-out { background:rgba(255,69,0,0.12);  color:var(--orange); border:1px solid var(--orange); }
+
+    /* Loading spinner */
+    .loading { text-align:center; padding:48px; color:var(--gray); font-size:12px; letter-spacing:2px; text-transform:uppercase; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div><span>V</span>ALKYRIA</div>
+      <div class="sb-subtitle">Admin</div>
+    </div>
+    <nav class="sb-nav">
+      <button class="sb-link active" data-section="productos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4"/></svg>
+        Productos
+      </button>
+      <button class="sb-link" data-section="config">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M20 12h2M2 12h2M12 2v2M12 20v2"/></svg>
+        Configuración
+      </button>
+      <button class="sb-link" data-section="testimonios">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonios
+      </button>
+    </nav>
+    <div class="sb-footer">
+      <p class="sb-user" id="sb-user-email"></p>
+      <button class="sb-logout" id="sb-logout">Cerrar sesión →</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <p class="topbar-title" id="topbar-title">PRODUCTOS</p>
+      <span class="topbar-badge" id="topbar-badge">tienda</span>
+    </div>
+
+    <div class="content">
+
+      <!-- STAT CARDS -->
+      <div class="stat-grid" id="stat-grid">
+        <div class="stat-card">
+          <p class="stat-label">Productos activos</p>
+          <p class="stat-value orange" id="stat-products">—</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Cupos coaching</p>
+          <p class="stat-value" id="stat-cupos">—</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Precio coaching</p>
+          <p class="stat-value gold" id="stat-price">—</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Countdown</p>
+          <p class="stat-value" id="stat-countdown" style="font-size:20px;padding-top:8px">—</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN PRODUCTOS -->
+      <div class="section active" id="section-productos">
+        <div class="table-wrap">
+          <div class="table-header">
+            <p class="table-header-title">CATÁLOGO</p>
+            <button class="btn btn-primary" id="btn-add-product">+ Nuevo producto</button>
+          </div>
+          <div id="products-table-wrap"><div class="loading">Cargando…</div></div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN CONFIGURACIÓN -->
+      <div class="section" id="section-config">
+        <div class="config-grid" id="config-grid"><div class="loading">Cargando…</div></div>
+      </div>
+
+      <!-- SECCIÓN TESTIMONIOS -->
+      <div class="section" id="section-testimonios">
+        <div class="table-wrap">
+          <div class="table-header">
+            <p class="table-header-title">TESTIMONIOS</p>
+            <button class="btn btn-primary" id="btn-add-testimonial">+ Nuevo testimonio</button>
+          </div>
+          <div id="testimonials-table-wrap"><div class="loading">Cargando…</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL PRODUCTO -->
+  <div class="modal-bg" id="product-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="product-modal-close">✕</button>
+      <p class="modal-title" id="product-modal-title">NUEVO PRODUCTO</p>
+      <form id="product-form" autocomplete="off">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombre *</label>
+            <input name="name" required placeholder="HOODIE VALKYRIA">
+          </div>
+          <div class="form-field">
+            <label>Slug (ID único) *</label>
+            <input name="slug" required placeholder="hoodie-valkyria">
+          </div>
+          <div class="form-field">
+            <label>Categoría *</label>
+            <select name="category">
+              <option value="ropa">Ropa</option>
+              <option value="conjuntos">Conjuntos</option>
+              <option value="accesorios">Accesorios</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Precio (S/) *</label>
+            <input name="price" type="number" min="1" required placeholder="149">
+          </div>
+          <div class="form-field">
+            <label>Stock</label>
+            <input name="stock" type="number" min="0" placeholder="0">
+          </div>
+          <div class="form-field">
+            <label>Texto imagen (sigla)</label>
+            <input name="img_text" placeholder="VLK">
+          </div>
+          <div class="form-field">
+            <label>Talles (separados por coma)</label>
+            <input name="sizes" placeholder="XS,S,M,L,XL">
+          </div>
+          <div class="form-field">
+            <label>Orden</label>
+            <input name="sort_order" type="number" placeholder="0">
+          </div>
+          <div class="form-field full">
+            <label>Descripción</label>
+            <textarea name="description" placeholder="Descripción del producto…"></textarea>
+          </div>
+          <div class="form-field full">
+            <label>Mensaje WhatsApp (URL encoded)</label>
+            <input name="wa_message" placeholder="Hoodie+Valkyria+(S%2F149)">
+          </div>
+          <div class="form-field">
+            <label>Badge (opcional)</label>
+            <input name="badge" placeholder="Pack · Mejor valor">
+          </div>
+          <div class="form-field">
+            <label>Tipo badge</label>
+            <select name="badge_type">
+              <option value="orange">Naranja</option>
+              <option value="gold">Dorado</option>
+            </select>
+          </div>
+        </div>
+        <p class="form-error" id="product-form-error"></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="product-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="product-submit">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL TESTIMONIO -->
+  <div class="modal-bg" id="testimonial-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="testimonial-modal-close">✕</button>
+      <p class="modal-title" id="testimonial-modal-title">NUEVO TESTIMONIO</p>
+      <form id="testimonial-form" autocomplete="off">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Nombre *</label>
+            <input name="name" required placeholder="María García">
+          </div>
+          <div class="form-field">
+            <label>Rol / categoría</label>
+            <input name="role" placeholder="-74 kg · 2 años de coaching">
+          </div>
+          <div class="form-field full">
+            <label>Cita *</label>
+            <textarea name="quote" required placeholder="El mejor coach que he tenido…"></textarea>
+          </div>
+          <div class="form-field full">
+            <label>Resultado (opcional)</label>
+            <input name="result" placeholder="SQ 130kg → 165kg en 8 meses">
+          </div>
+          <div class="form-field">
+            <label>Orden</label>
+            <input name="sort_order" type="number" placeholder="0">
+          </div>
+        </div>
+        <p class="form-error" id="testimonial-form-error"></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" id="testimonial-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar testimonio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      logout, getProducts, createProduct, updateProduct, deleteProduct,
+      getConfig, updateConfig, getTestimonials, createTestimonial,
+      updateTestimonial, deleteTestimonial
+    } from '../js/api.js';
+
+    // ── Auth guard ──────────────────────────────────────────
+    if (!localStorage.getItem('vlk-admin-token')) {
+      window.location.replace('login.html');
+    }
+
+    // ── User info ────────────────────────────────────────────
+    const token = localStorage.getItem('vlk-admin-token');
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.getElementById('sb-user-email').textContent = payload.email || 'Admin';
+    } catch {}
+
+    document.getElementById('sb-logout').addEventListener('click', async () => {
+      await logout();
+      window.location.replace('login.html');
+    });
+
+    // ── Nav ──────────────────────────────────────────────────
+    const sections = { productos: 'PRODUCTOS', config: 'CONFIGURACIÓN', testimonios: 'TESTIMONIOS' };
+    const badges   = { productos: 'tienda', config: 'site settings', testimonios: 'social proof' };
+
+    document.querySelectorAll('.sb-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sec = btn.dataset.section;
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${sec}`).classList.add('active');
+        document.getElementById('topbar-title').textContent = sections[sec];
+        document.getElementById('topbar-badge').textContent = badges[sec];
+      });
+    });
+
+    // ── Load stats ───────────────────────────────────────────
+    async function loadStats() {
+      const [products, config] = await Promise.all([getProducts(), getConfig()]);
+      document.getElementById('stat-products').textContent  = products.length;
+      document.getElementById('stat-cupos').textContent     = config.cupos ?? '—';
+      document.getElementById('stat-price').textContent     = `S/ ${config.coaching_price ?? '—'}`;
+      document.getElementById('stat-countdown').textContent = config.countdown_date ?? '—';
+    }
+    loadStats();
+
+    // ═══════════════════════════════════════════════════════
+    // PRODUCTOS
+    // ═══════════════════════════════════════════════════════
+
+    let editingProductId = null;
+
+    async function loadProducts() {
+      const wrap = document.getElementById('products-table-wrap');
+      wrap.innerHTML = '<div class="loading">Cargando…</div>';
+      try {
+        const products = await getProducts();
+        if (!products.length) { wrap.innerHTML = '<div class="loading">Sin productos</div>'; return; }
+
+        wrap.innerHTML = `
+          <table class="adm-table">
+            <thead><tr>
+              <th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Orden</th><th></th>
+            </tr></thead>
+            <tbody>${products.map(p => `
+              <tr>
+                <td>${p.name}</td>
+                <td>${p.category}</td>
+                <td>S/ ${p.price}</td>
+                <td>${stockBadge(p.stock)}</td>
+                <td>${p.sort_order}</td>
+                <td style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button class="btn btn-ghost btn-sm" onclick="openEditProduct('${p.id}')">Editar</button>
+                  <button class="btn btn-danger btn-sm" onclick="removeProduct('${p.id}')">Archivar</button>
+                </td>
+              </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } catch (e) { wrap.innerHTML = `<div class="loading">Error: ${e.message}</div>`; }
+    }
+
+    function stockBadge(stock) {
+      if (stock === 0)  return `<span class="badge badge-out">Agotado</span>`;
+      if (stock <= 3)   return `<span class="badge badge-low">${stock} unid.</span>`;
+      return `<span class="badge badge-ok">${stock} unid.</span>`;
+    }
+
+    window.openEditProduct = async (id) => {
+      const products = await getProducts();
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      editingProductId = id;
+      document.getElementById('product-modal-title').textContent = 'EDITAR PRODUCTO';
+      const form = document.getElementById('product-form');
+      form.name.value        = p.name;
+      form.slug.value        = p.slug;
+      form.category.value    = p.category;
+      form.price.value       = p.price;
+      form.stock.value       = p.stock;
+      form.img_text.value    = p.img_text;
+      form.sizes.value       = (p.sizes || []).join(',');
+      form.sort_order.value  = p.sort_order;
+      form.description.value = p.description;
+      form.wa_message.value  = p.wa_message;
+      form.badge.value       = p.badge || '';
+      form.badge_type.value  = p.badge_type || 'orange';
+      document.getElementById('product-modal').classList.add('open');
+    };
+
+    window.removeProduct = async (id) => {
+      if (!confirm('¿Archivar este producto? No se elimina, solo se oculta del catálogo.')) return;
+      try { await deleteProduct(id); loadProducts(); loadStats(); }
+      catch (e) { alert(e.message); }
+    };
+
+    document.getElementById('btn-add-product').addEventListener('click', () => {
+      editingProductId = null;
+      document.getElementById('product-modal-title').textContent = 'NUEVO PRODUCTO';
+      document.getElementById('product-form').reset();
+      document.getElementById('product-form-error').textContent = '';
+      document.getElementById('product-modal').classList.add('open');
+    });
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.remove('open');
+      editingProductId = null;
+    }
+    document.getElementById('product-modal-close').addEventListener('click', closeProductModal);
+    document.getElementById('product-cancel').addEventListener('click', closeProductModal);
+
+    document.getElementById('product-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const errEl  = document.getElementById('product-form-error');
+      const submit = document.getElementById('product-submit');
+      const form   = e.target;
+      errEl.textContent  = '';
+      submit.disabled    = true;
+      submit.textContent = 'Guardando…';
+
+      const body = {
+        name:        form.name.value.trim(),
+        slug:        form.slug.value.trim(),
+        category:    form.category.value,
+        price:       parseInt(form.price.value),
+        stock:       parseInt(form.stock.value || 0),
+        img_text:    form.img_text.value.trim() || 'VLK',
+        sizes:       form.sizes.value.split(',').map(s => s.trim()).filter(Boolean),
+        sort_order:  parseInt(form.sort_order.value || 0),
+        description: form.description.value.trim(),
+        wa_message:  form.wa_message.value.trim(),
+        badge:       form.badge.value.trim() || null,
+        badge_type:  form.badge_type.value,
+      };
+
+      try {
+        if (editingProductId) await updateProduct(editingProductId, body);
+        else                  await createProduct(body);
+        closeProductModal();
+        loadProducts();
+        loadStats();
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally {
+        submit.disabled    = false;
+        submit.textContent = 'Guardar producto';
+      }
+    });
+
+    loadProducts();
+
+    // ═══════════════════════════════════════════════════════
+    // CONFIGURACIÓN
+    // ═══════════════════════════════════════════════════════
+
+    async function loadConfig() {
+      const wrap = document.getElementById('config-grid');
+      wrap.innerHTML = '<div class="loading">Cargando…</div>';
+      try {
+        const config = await getConfig();
+        wrap.innerHTML = `
+          <div class="config-card">
+            <p class="config-label">Cupos disponibles</p>
+            <p class="config-desc">Número de cupos para coaching que se muestra en todo el sitio</p>
+            <input class="config-input" id="cfg-cupos" type="number" min="0" value="${config.cupos ?? '3'}">
+          </div>
+          <div class="config-card">
+            <p class="config-label">Precio coaching (S/)</p>
+            <p class="config-desc">Precio mensual que aparece en la sección de coaching</p>
+            <input class="config-input" id="cfg-price" type="number" min="0" value="${config.coaching_price ?? '219'}">
+          </div>
+          <div class="config-card">
+            <p class="config-label">Fecha countdown</p>
+            <p class="config-desc">Próxima competencia o evento (formato YYYY-MM-DD)</p>
+            <input class="config-input" id="cfg-date" type="date" value="${config.countdown_date ?? ''}">
+          </div>
+          <div class="config-card">
+            <p class="config-label">Número WhatsApp</p>
+            <p class="config-desc">Sin + ni espacios. Ej: 51955577054</p>
+            <input class="config-input" id="cfg-wa" value="${config.wa_number ?? ''}">
+          </div>
+          <div class="config-save-wrap">
+            <button class="btn btn-primary" id="btn-save-config">Guardar configuración</button>
+            <p class="config-ok" id="config-ok">✓ Guardado</p>
+          </div>`;
+
+        document.getElementById('btn-save-config').addEventListener('click', saveConfig);
+      } catch (e) { wrap.innerHTML = `<div class="loading">Error: ${e.message}</div>`; }
+    }
+
+    async function saveConfig() {
+      const btn  = document.getElementById('btn-save-config');
+      const ok   = document.getElementById('config-ok');
+      btn.disabled = true;
+      btn.textContent = 'Guardando…';
+      try {
+        await updateConfig({
+          cupos:            document.getElementById('cfg-cupos').value,
+          coaching_price:   document.getElementById('cfg-price').value,
+          countdown_date:   document.getElementById('cfg-date').value,
+          wa_number:        document.getElementById('cfg-wa').value,
+        });
+        ok.classList.add('visible');
+        setTimeout(() => ok.classList.remove('visible'), 3000);
+        loadStats();
+      } catch (e) { alert(e.message); }
+      finally { btn.disabled = false; btn.textContent = 'Guardar configuración'; }
+    }
+
+    loadConfig();
+    document.querySelector('[data-section="config"]').addEventListener('click', loadConfig);
+
+    // ═══════════════════════════════════════════════════════
+    // TESTIMONIOS
+    // ═══════════════════════════════════════════════════════
+
+    let editingTestimonialId = null;
+
+    async function loadTestimonials() {
+      const wrap = document.getElementById('testimonials-table-wrap');
+      wrap.innerHTML = '<div class="loading">Cargando…</div>';
+      try {
+        const list = await getTestimonials();
+        if (!list.length) { wrap.innerHTML = '<div class="loading">Sin testimonios</div>'; return; }
+        wrap.innerHTML = `
+          <table class="adm-table">
+            <thead><tr><th>Nombre</th><th>Rol</th><th>Resultado</th><th>Orden</th><th></th></tr></thead>
+            <tbody>${list.map(t => `
+              <tr>
+                <td>${t.name}</td>
+                <td>${t.role || '—'}</td>
+                <td>${t.result || '—'}</td>
+                <td>${t.sort_order}</td>
+                <td style="display:flex;gap:6px">
+                  <button class="btn btn-ghost btn-sm" onclick="openEditTestimonial('${t.id}')">Editar</button>
+                  <button class="btn btn-danger btn-sm" onclick="removeTestimonial('${t.id}')">Archivar</button>
+                </td>
+              </tr>`).join('')}
+            </tbody>
+          </table>`;
+      } catch (e) { wrap.innerHTML = `<div class="loading">Error: ${e.message}</div>`; }
+    }
+
+    window.openEditTestimonial = async (id) => {
+      const list = await getTestimonials();
+      const t = list.find(x => x.id === id);
+      if (!t) return;
+      editingTestimonialId = id;
+      document.getElementById('testimonial-modal-title').textContent = 'EDITAR TESTIMONIO';
+      const form = document.getElementById('testimonial-form');
+      form.name.value       = t.name;
+      form.role.value       = t.role || '';
+      form.quote.value      = t.quote;
+      form.result.value     = t.result || '';
+      form.sort_order.value = t.sort_order;
+      document.getElementById('testimonial-modal').classList.add('open');
+    };
+
+    window.removeTestimonial = async (id) => {
+      if (!confirm('¿Archivar este testimonio?')) return;
+      try { await deleteTestimonial(id); loadTestimonials(); }
+      catch (e) { alert(e.message); }
+    };
+
+    document.getElementById('btn-add-testimonial').addEventListener('click', () => {
+      editingTestimonialId = null;
+      document.getElementById('testimonial-modal-title').textContent = 'NUEVO TESTIMONIO';
+      document.getElementById('testimonial-form').reset();
+      document.getElementById('testimonial-form-error').textContent = '';
+      document.getElementById('testimonial-modal').classList.add('open');
+    });
+
+    function closeTestimonialModal() {
+      document.getElementById('testimonial-modal').classList.remove('open');
+      editingTestimonialId = null;
+    }
+    document.getElementById('testimonial-modal-close').addEventListener('click', closeTestimonialModal);
+    document.getElementById('testimonial-cancel').addEventListener('click', closeTestimonialModal);
+
+    document.getElementById('testimonial-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const errEl = document.getElementById('testimonial-form-error');
+      const form  = e.target;
+      errEl.textContent = '';
+      const body = {
+        name:       form.name.value.trim(),
+        role:       form.role.value.trim(),
+        quote:      form.quote.value.trim(),
+        result:     form.result.value.trim(),
+        sort_order: parseInt(form.sort_order.value || 0),
+      };
+      try {
+        if (editingTestimonialId) await updateTestimonial(editingTestimonialId, body);
+        else                      await createTestimonial(body);
+        closeTestimonialModal();
+        loadTestimonials();
+      } catch (err) { errEl.textContent = err.message; }
+    });
+
+    document.querySelector('[data-section="testimonios"]').addEventListener('click', loadTestimonials);
+    loadTestimonials();
+  </script>
+
+</body>
+</html>

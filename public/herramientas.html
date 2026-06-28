@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Herramientas — Calculadora de 1RM | Valkyria</title>
+  <meta name="description" content="Calculá tu 1RM estimado y los porcentajes de carga para sentadilla, press banca y peso muerto. Método RV Strength — Valkyria.">
+  <meta name="author" content="Valkyria">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://valkyria.pe/herramientas.html">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    /* === HERRAMIENTAS — ESTILOS ESPECÍFICOS === */
+
+    /* Hero */
+    .herr-hero {
+      padding: 140px 64px 64px;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .herr-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 50% 60% at 20% 50%, rgba(255, 184, 0, 0.07) 0%, transparent 65%),
+        var(--black);
+      pointer-events: none;
+    }
+
+    .herr-hero-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image:
+        linear-gradient(#2a2a2a 1px, transparent 1px),
+        linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+
+    .herr-hero h1 {
+      opacity: 1;
+      animation: none;
+      position: relative;
+    }
+
+    .herr-hero h1 span { color: var(--gold); }
+
+    .herr-sub {
+      font-size: 15px;
+      color: var(--gray);
+      max-width: 480px;
+      line-height: 1.75;
+      margin-top: 20px;
+      position: relative;
+    }
+
+    /* Sección calculadoras */
+    .herr-wrap {
+      padding: 64px 64px 100px;
+      background: var(--dark);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      align-items: start;
+    }
+
+    /* Caja calculadora */
+    .calc-box {
+      background: var(--card);
+      border: 1px solid var(--border2);
+      padding: 40px 36px;
+      transition: border-color 0.25s;
+    }
+    .calc-box:hover { border-color: var(--gold); }
+
+    .calc-icon {
+      font-family: var(--font-display);
+      font-size: 40px;
+      color: var(--gold);
+      opacity: 0.5;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .calc-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 1px;
+      line-height: 1.05;
+      margin-bottom: 6px;
+    }
+
+    .calc-subtitle {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .calc-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .calc-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .calc-field label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .calc-field input {
+      background: var(--dark);
+      border: 1px solid var(--border2);
+      color: var(--white);
+      padding: 12px 14px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+      -moz-appearance: textfield;
+    }
+    .calc-field input::-webkit-inner-spin-button,
+    .calc-field input::-webkit-outer-spin-button { appearance: none; }
+    .calc-field input:focus { border-color: var(--gold); }
+    .calc-field input::placeholder { color: var(--border2); font-weight: 400; }
+
+    .calc-btn {
+      width: 100%;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      padding: 14px 0;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 24px;
+    }
+    .calc-btn:hover { background: var(--orange); }
+
+    /* Resultado */
+    .calc-result {
+      display: none;
+      background: var(--dark);
+      border: 1px solid var(--border2);
+      border-left: 3px solid var(--gold);
+      padding: 20px 20px 16px;
+    }
+    .calc-result.visible { display: block; }
+
+    .calc-result-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .calc-result-num {
+      font-family: var(--font-display);
+      font-size: 48px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .calc-result-unit {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    /* Tabla de porcentajes */
+    .calc-pcts {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .calc-pcts thead tr {
+      border-bottom: 1px solid var(--border2);
+    }
+    .calc-pcts th {
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      padding: 6px 8px 8px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .calc-pcts td {
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--gray);
+    }
+    .calc-pcts td:first-child { color: var(--white); font-weight: 600; }
+    .calc-pcts td:last-child  { color: var(--gold); font-weight: 600; }
+
+    /* Nota informativa */
+    .herr-nota {
+      background: var(--black);
+      padding: 48px 64px;
+      border-top: 1px solid var(--border2);
+    }
+
+    .herr-nota-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .herr-nota h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .herr-nota p {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .herr-wrap { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .herr-hero  { padding: 110px 24px 48px; }
+      .herr-wrap  { padding: 32px 24px 60px; }
+      .herr-nota  { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cur"      id="cur"  aria-hidden="true"></div>
+  <div class="cur-ring" id="ring" aria-hidden="true"></div>
+
+  <!-- Menú mobile -->
+  <nav id="mobileMenu" class="nav-mobile-menu" aria-label="Menú principal" aria-hidden="true">
+    <a href="index.html#metodo"   aria-label="Ir a Método">Método</a>
+    <a href="index.html#coaching" aria-label="Ir a Coaching">Coaching</a>
+    <a href="tienda.html"         aria-label="Ir a Tienda">Tienda</a>
+    <a href="index.html#proceso"  aria-label="Ir a Proceso">Proceso</a>
+    <a href="sobre-mi.html"       aria-label="Ir a Sobre mí">Sobre mí</a>
+    <a href="index.html" class="btn-p" style="margin-top:16px">← Volver al inicio</a>
+  </nav>
+
+  <!-- ── NAV ──────────────────────────────────────────────── -->
+  <header>
+    <nav id="nav" aria-label="Navegación principal">
+      <a href="index.html" class="nav-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="index.html#metodo">Método</a></li>
+        <li><a href="index.html#coaching">Coaching</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="index.html#proceso">Proceso</a></li>
+        <li><a href="sobre-mi.html">Sobre mí</a></li>
+      </ul>
+
+      <a href="index.html#coaching" class="nav-cta">Quiero coaching</a>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="herr-hero" aria-label="Herramientas">
+    <div class="herr-hero-bg"   aria-hidden="true"></div>
+    <div class="herr-hero-grid" aria-hidden="true"></div>
+    <p class="s-label">Cálculo de cargas</p>
+    <h1>CALCULADORA<br><span>DE 1RM</span></h1>
+    <p class="herr-sub">Ingresá el peso y las reps de tu mejor serie para estimar tu máximo y ver los porcentajes de entrenamiento. Fórmula de Epley.</p>
+  </section>
+
+  <!-- ── CALCULADORAS ─────────────────────────────────────── -->
+  <div class="herr-wrap" role="main">
+
+    <!-- Sentadilla -->
+    <div class="calc-box reveal" id="calc-sq">
+      <p class="calc-icon">SQ</p>
+      <p class="calc-title">SENTADILLA</p>
+      <p class="calc-subtitle">Back squat</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="sq-kg">Peso levantado (kg)</label>
+          <input type="number" id="sq-kg" placeholder="Ej: 150" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="sq-reps">Repeticiones</label>
+          <input type="number" id="sq-reps" placeholder="Ej: 3" min="1" max="30" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcular('sq')">Calcular 1RM</button>
+      <div class="calc-result" id="sq-result">
+        <p class="calc-result-label">1RM estimado</p>
+        <p class="calc-result-num" id="sq-rm">—</p>
+        <p class="calc-result-unit">kilogramos</p>
+        <table class="calc-pcts" id="sq-pcts" aria-label="Porcentajes de sentadilla"></table>
+      </div>
+    </div>
+
+    <!-- Press Banca -->
+    <div class="calc-box reveal" id="calc-bp">
+      <p class="calc-icon">BP</p>
+      <p class="calc-title">PRESS BANCA</p>
+      <p class="calc-subtitle">Bench press</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="bp-kg">Peso levantado (kg)</label>
+          <input type="number" id="bp-kg" placeholder="Ej: 100" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="bp-reps">Repeticiones</label>
+          <input type="number" id="bp-reps" placeholder="Ej: 3" min="1" max="30" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcular('bp')">Calcular 1RM</button>
+      <div class="calc-result" id="bp-result">
+        <p class="calc-result-label">1RM estimado</p>
+        <p class="calc-result-num" id="bp-rm">—</p>
+        <p class="calc-result-unit">kilogramos</p>
+        <table class="calc-pcts" id="bp-pcts" aria-label="Porcentajes de press banca"></table>
+      </div>
+    </div>
+
+    <!-- Peso Muerto -->
+    <div class="calc-box reveal" id="calc-dl">
+      <p class="calc-icon">DL</p>
+      <p class="calc-title">PESO MUERTO</p>
+      <p class="calc-subtitle">Deadlift</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="dl-kg">Peso levantado (kg)</label>
+          <input type="number" id="dl-kg" placeholder="Ej: 190" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="dl-reps">Repeticiones</label>
+          <input type="number" id="dl-reps" placeholder="Ej: 3" min="1" max="30" step="1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcular('dl')">Calcular 1RM</button>
+      <div class="calc-result" id="dl-result">
+        <p class="calc-result-label">1RM estimado</p>
+        <p class="calc-result-num" id="dl-rm">—</p>
+        <p class="calc-result-unit">kilogramos</p>
+        <table class="calc-pcts" id="dl-pcts" aria-label="Porcentajes de peso muerto"></table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── CALCULADORAS ADICIONALES ────────────────────────── -->
+  <div class="herr-wrap" style="background:var(--black);border-top:1px solid var(--border2)" role="complementary">
+
+    <!-- Wilks / DOTS -->
+    <div class="calc-box reveal" id="calc-wilks">
+      <p class="calc-icon" style="color:var(--orange)">W</p>
+      <p class="calc-title">PUNTAJE WILKS</p>
+      <p class="calc-subtitle">Fuerza relativa ajustada por peso corporal</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="wilks-total">Total levantado (kg)</label>
+          <input type="number" id="wilks-total" placeholder="Ej: 540" min="1" max="2000" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="wilks-bw">Peso corporal (kg)</label>
+          <input type="number" id="wilks-bw" placeholder="Ej: 73" min="30" max="200" step="0.1">
+        </div>
+        <div class="calc-field">
+          <label>Sexo</label>
+          <div style="display:flex;gap:8px">
+            <button class="size-pick-opt" id="wilks-m" onclick="setWilksSex('m')" style="flex:1">Masculino</button>
+            <button class="size-pick-opt" id="wilks-f" onclick="setWilksSex('f')" style="flex:1">Femenino</button>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcWilks()">Calcular Wilks</button>
+      <div class="calc-result" id="wilks-result">
+        <p class="calc-result-label">Puntaje Wilks</p>
+        <p class="calc-result-num" id="wilks-score">—</p>
+        <p class="calc-result-unit" id="wilks-level"></p>
+      </div>
+    </div>
+
+    <!-- Conversor RPE → % -->
+    <div class="calc-box reveal" id="calc-rpe">
+      <p class="calc-icon" style="color:var(--orange)">RPE</p>
+      <p class="calc-title">CONVERSOR RPE</p>
+      <p class="calc-subtitle">Esfuerzo percibido → porcentaje de 1RM</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="rpe-1rm">Tu 1RM (kg) — opcional</label>
+          <input type="number" id="rpe-1rm" placeholder="Ej: 200 (para ver kg)" min="1" max="999" step="0.5">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="renderRpeTable()">Ver tabla</button>
+      <div class="calc-result" id="rpe-result" style="padding:0;background:none;border:none">
+        <div style="overflow-x:auto">
+          <table class="calc-pcts" id="rpe-table" aria-label="Tabla RPE"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total de competición -->
+    <div class="calc-box reveal" id="calc-total">
+      <p class="calc-icon" style="color:var(--orange)">∑</p>
+      <p class="calc-title">TOTAL COMP.</p>
+      <p class="calc-subtitle">Proyección para tu próxima competencia</p>
+      <div class="calc-fields">
+        <div class="calc-field">
+          <label for="tc-sq">Mejor sentadilla (kg)</label>
+          <input type="number" id="tc-sq" placeholder="Ej: 210" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="tc-bp">Mejor press banca (kg)</label>
+          <input type="number" id="tc-bp" placeholder="Ej: 140" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="tc-dl">Mejor peso muerto (kg)</label>
+          <input type="number" id="tc-dl" placeholder="Ej: 190" min="1" max="999" step="0.5">
+        </div>
+        <div class="calc-field">
+          <label for="tc-bw">Peso corporal (kg) — opcional</label>
+          <input type="number" id="tc-bw" placeholder="Para calcular Wilks" min="30" max="200" step="0.1">
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcTotal()">Calcular total</button>
+      <div class="calc-result" id="total-result">
+        <p class="calc-result-label">Total</p>
+        <p class="calc-result-num" id="total-num">—</p>
+        <p class="calc-result-unit">kilogramos</p>
+        <table class="calc-pcts" id="total-breakdown" style="margin-top:16px" aria-label="Desglose del total"></table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── NOTA ─────────────────────────────────────────────── -->
+  <div class="herr-nota">
+    <div class="herr-nota-inner">
+      <h3>¿CÓMO USAR ESTOS NÚMEROS?</h3>
+      <p>El 1RM estimado es una referencia — no un número para ir a intentar en el gym mañana. Usalo para programar tus cargas de entrenamiento según el bloque en que estés: acumulación (60–75%), intensificación (75–87%), peaking (87–95%).</p>
+      <p>Si querés un programa periodizado con estas cargas como base, <strong>eso es exactamente lo que hacemos en el coaching</strong>.</p>
+      <a href="https://wa.me/51955577054?text=Hola%2C+me+interesa+el+coaching+Valkyria" class="btn-p" target="_blank" rel="noopener noreferrer">Consultar coaching →</a>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <a href="index.html" class="f-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+    <nav class="f-links" aria-label="Links del footer">
+      <a href="index.html#metodo">Método</a>
+      <a href="index.html#coaching">Coaching</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="index.html#proceso">Proceso</a>
+      <a href="sobre-mi.html">Sobre mí</a>
+    </nav>
+
+    <p class="f-copy">© 2025 Valkyria — Fuerza con argumento.</p>
+
+    <div class="f-social" aria-label="Redes sociales">
+      <a href="#" class="fsoc" aria-label="Instagram de Valkyria">IG</a>
+      <a href="#" class="fsoc" aria-label="TikTok de Valkyria">TK</a>
+      <a href="#" class="fsoc" aria-label="YouTube de Valkyria">YT</a>
+    </div>
+  </footer>
+
+  <!-- Botón flotante WhatsApp -->
+  <a href="https://wa.me/51955577054?text=Hola%2C+tengo+una+consulta+para+Valkyria"
+     class="fab-wa"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Contactar por WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <button id="back-to-top" aria-label="Volver al inicio de la página">↑</button>
+
+  <script src="js/main.js" defer></script>
+  <script>
+    // ── Wilks ────────────────────────────────────────────────
+    const WILKS_M = { a:-216.0475144, b:16.2606339, c:-0.002388645, d:-0.00113732, e:7.01863e-6, f:-1.291e-8 };
+    const WILKS_F = { a:594.31747775582, b:-27.23842536447, c:0.82112226871, d:-0.00930733913, e:4.731582e-5, f:-9.054e-8 };
+    let wilksSex  = 'm';
+
+    function setWilksSex(sex) {
+      wilksSex = sex;
+      document.getElementById('wilks-m').classList.toggle('selected', sex === 'm');
+      document.getElementById('wilks-f').classList.toggle('selected', sex === 'f');
+    }
+    setWilksSex('m');
+
+    function wilksCoeff(bw, coeff) {
+      const { a, b, c, d, e, f } = coeff;
+      return 500 / (a + b*bw + c*bw**2 + d*bw**3 + e*bw**4 + f*bw**5);
+    }
+
+    function calcWilks() {
+      const total = parseFloat(document.getElementById('wilks-total').value);
+      const bw    = parseFloat(document.getElementById('wilks-bw').value);
+      if (!total || !bw) { alert('Ingresá total y peso corporal.'); return; }
+      const coeff = wilksSex === 'm' ? WILKS_M : WILKS_F;
+      const score = Math.round(total * wilksCoeff(bw, coeff) * 10) / 10;
+      const level = score < 250 ? 'Principiante' : score < 350 ? 'Intermedio' : score < 450 ? 'Avanzado' : score < 550 ? 'Elite' : 'Clase mundial';
+      document.getElementById('wilks-score').textContent = score;
+      document.getElementById('wilks-level').textContent = level;
+      document.getElementById('wilks-result').classList.add('visible');
+    }
+
+    // ── RPE Table ────────────────────────────────────────────
+    const RPE_DATA = {
+      1:  { 10:100,  9.5:97.8,  9:95.5,  8.5:93.9,  8:92.2,  7.5:90.7,  7:89.2 },
+      2:  { 10:97.8, 9.5:95.5,  9:93.9,  8.5:92.2,  8:90.7,  7.5:89.2,  7:87.6 },
+      3:  { 10:95.5, 9.5:93.9,  9:92.2,  8.5:90.7,  8:89.2,  7.5:87.6,  7:86.3 },
+      4:  { 10:93.9, 9.5:92.2,  9:90.7,  8.5:89.2,  8:87.6,  7.5:86.3,  7:85.0 },
+      5:  { 10:92.2, 9.5:90.7,  9:89.2,  8.5:87.6,  8:86.3,  7.5:85.0,  7:83.7 },
+      6:  { 10:90.7, 9.5:89.2,  9:87.6,  8.5:86.3,  8:85.0,  7.5:83.7,  7:82.4 },
+      7:  { 10:89.2, 9.5:87.6,  9:86.3,  8.5:85.0,  8:83.7,  7.5:82.4,  7:81.1 },
+      8:  { 10:87.6, 9.5:86.3,  9:85.0,  8.5:83.7,  8:82.4,  7.5:81.1,  7:79.9 },
+      9:  { 10:86.3, 9.5:85.0,  9:83.7,  8.5:82.4,  8:81.1,  7.5:79.9,  7:78.6 },
+      10: { 10:85.0, 9.5:83.7,  9:82.4,  8.5:81.1,  8:79.9,  7.5:78.6,  7:77.4 },
+    };
+    const RPE_COLS = [10, 9.5, 9, 8.5, 8, 7.5, 7];
+
+    function renderRpeTable() {
+      const rm = parseFloat(document.getElementById('rpe-1rm').value) || null;
+      const showKg = rm && rm > 0;
+
+      const headerCells = RPE_COLS.map(r => `<th>@${r}</th>`).join('');
+      const rows = Object.keys(RPE_DATA).map(rep => {
+        const cells = RPE_COLS.map(rpe => {
+          const pct = RPE_DATA[rep][rpe];
+          if (showKg) {
+            const kg = Math.round(rm * pct / 100 / 2.5) * 2.5;
+            return `<td title="${pct}%">${kg}</td>`;
+          }
+          return `<td>${pct}%</td>`;
+        }).join('');
+        return `<tr><td style="color:var(--white);font-weight:600">${rep}rep${rep > 1 ? 's' : ''}</td>${cells}</tr>`;
+      }).join('');
+
+      document.getElementById('rpe-table').innerHTML = `
+        <thead><tr><th>Reps</th>${headerCells}</tr></thead>
+        <tbody>${rows}</tbody>
+        ${showKg ? '<caption style="font-size:9px;color:var(--gray);letter-spacing:1px;padding-top:8px;text-align:left">Cargas en kg (redondeadas a 2.5 kg)</caption>' : ''}
+      `;
+      document.getElementById('rpe-result').classList.add('visible');
+    }
+
+    // ── Total competición ─────────────────────────────────────
+    function calcTotal() {
+      const sq = parseFloat(document.getElementById('tc-sq').value);
+      const bp = parseFloat(document.getElementById('tc-bp').value);
+      const dl = parseFloat(document.getElementById('tc-dl').value);
+      const bw = parseFloat(document.getElementById('tc-bw').value);
+      if (!sq || !bp || !dl) { alert('Ingresá las tres levantadas.'); return; }
+
+      const total = sq + bp + dl;
+      document.getElementById('total-num').textContent = total;
+
+      let rows = `
+        <tr><td>Sentadilla</td><td style="color:var(--gray)">SQ</td><td>${sq} kg</td></tr>
+        <tr><td>Press Banca</td><td style="color:var(--gray)">BP</td><td>${bp} kg</td></tr>
+        <tr><td>Peso Muerto</td><td style="color:var(--gray)">DL</td><td>${dl} kg</td></tr>
+      `;
+
+      if (bw) {
+        const coeff  = wilksSex === 'm' ? WILKS_M : WILKS_F;
+        const wilks  = Math.round(total * wilksCoeff(bw, coeff) * 10) / 10;
+        const level  = wilks < 250 ? 'Principiante' : wilks < 350 ? 'Intermedio' : wilks < 450 ? 'Avanzado' : wilks < 550 ? 'Elite' : 'Clase mundial';
+        rows += `<tr><td>Wilks</td><td style="color:var(--gray)">${level}</td><td style="color:var(--gold)">${wilks}</td></tr>`;
+      }
+
+      document.getElementById('total-breakdown').innerHTML = `
+        <thead><tr><th>Levantada</th><th></th><th>Carga</th></tr></thead>
+        <tbody>${rows}</tbody>
+      `;
+      document.getElementById('total-result').classList.add('visible');
+    }
+
+    // Compartir sexo Wilks con el calculador de total
+    document.getElementById('tc-sq').form;
+
+    const PORCENTAJES = [
+      { pct: 100, label: '100%', zona: 'Máximo' },
+      { pct: 95,  label: '95%',  zona: 'Peaking' },
+      { pct: 90,  label: '90%',  zona: 'Peaking' },
+      { pct: 85,  label: '85%',  zona: 'Intensificación' },
+      { pct: 80,  label: '80%',  zona: 'Intensificación' },
+      { pct: 75,  label: '75%',  zona: 'Acumulación' },
+      { pct: 70,  label: '70%',  zona: 'Acumulación' },
+      { pct: 65,  label: '65%',  zona: 'Acumulación' },
+      { pct: 60,  label: '60%',  zona: 'Técnica' },
+    ];
+
+    function calcular(lift) {
+      const kg   = parseFloat(document.getElementById(`${lift}-kg`).value);
+      const reps = parseInt(document.getElementById(`${lift}-reps`).value, 10);
+
+      if (!kg || !reps || kg <= 0 || reps <= 0 || reps > 30) {
+        alert('Ingresá peso y repeticiones válidos (1–30 reps).');
+        return;
+      }
+
+      // Fórmula de Epley: 1RM = kg × (1 + reps/30)
+      const rm = Math.round(kg * (1 + reps / 30));
+
+      document.getElementById(`${lift}-rm`).textContent = rm;
+
+      const tbody = PORCENTAJES.map(({ pct, label, zona }) => {
+        const carga = Math.round(rm * pct / 100 / 2.5) * 2.5;
+        return `<tr>
+          <td>${label}</td>
+          <td style="color:var(--gray)">${zona}</td>
+          <td>${carga} kg</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById(`${lift}-pcts`).innerHTML = `
+        <thead>
+          <tr>
+            <th>% 1RM</th>
+            <th>Zona</th>
+            <th>Carga</th>
+          </tr>
+        </thead>
+        <tbody>${tbody}</tbody>
+      `;
+
+      document.getElementById(`${lift}-result`).classList.add('visible');
+    }
+
+    // Permitir Enter para calcular
+    ['sq', 'bp', 'dl'].forEach(lift => {
+      ['kg', 'reps'].forEach(field => {
+        document.getElementById(`${lift}-${field}`)
+          .addEventListener('keydown', e => { if (e.key === 'Enter') calcular(lift); });
+      });
+    });
+  </script>
+
+</body>
+</html>

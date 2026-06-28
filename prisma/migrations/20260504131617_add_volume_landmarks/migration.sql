@@ -1,0 +1,10 @@
+-- AlterTable
+ALTER TABLE "AthleteProfile" ADD COLUMN     "bpMav" INTEGER,
+ADD COLUMN     "bpMev" INTEGER,
+ADD COLUMN     "bpMrv" INTEGER,
+ADD COLUMN     "dlMav" INTEGER,
+ADD COLUMN     "dlMev" INTEGER,
+ADD COLUMN     "dlMrv" INTEGER,
+ADD COLUMN     "sqMav" INTEGER,
+ADD COLUMN     "sqMev" INTEGER,
+ADD COLUMN     "sqMrv" INTEGER;

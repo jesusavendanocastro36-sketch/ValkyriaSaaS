@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function(){
+      var token = localStorage.getItem('token');
+      var rol   = localStorage.getItem('rol');
+      if (!token) return;
+      if (rol === 'ATHLETE') window.location.replace('/athlete/dashboard');
+      else window.location.replace('/admin/dashboard');
+    })();
+  </script>
+
+  <!-- SEO -->
+  <title>Valkyria — Coaching en Powerlifting | Fuerza con argumento</title>
+  <meta name="description" content="Coaching en powerlifting con periodización por bloques 100% personalizada. S/219/mes. Lima, Perú.">
+  <meta name="keywords" content="powerlifting, coaching, periodización, Lima, Perú, fuerza, competición">
+  <meta name="author" content="Valkyria">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Valkyria — Fuerza con argumento">
+  <meta property="og:description" content="Coaching en powerlifting con periodización por bloques. Sin plantillas, sin humo.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://valkyria.pe">
+  <meta property="og:image" content="https://valkyria.pe/assets/og-image.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Valkyria — Fuerza con argumento">
+  <meta name="twitter:description" content="Coaching en powerlifting 100% individualizado. Lima, Perú.">
+
+  <!-- Favicon inline (SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://valkyria.pe/">
+
+  <!-- Schema Person + LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://valkyria.pe/#coach",
+        "name": "Jesús Avendaño",
+        "jobTitle": "Coach en Powerlifting",
+        "description": "Atleta competitivo y coach en powerlifting. Metodología individualizada por bloques. Lima, Perú.",
+        "url": "https://valkyria.pe/sobre-mi.html",
+        "sameAs": ["https://valkyria.pe"]
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://valkyria.pe/#business",
+        "name": "Valkyria",
+        "description": "Coaching en powerlifting con periodización por bloques 100% personalizada.",
+        "url": "https://valkyria.pe",
+        "telephone": "+51955577054",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Lima",
+          "addressCountry": "PE"
+        },
+        "priceRange": "S/ 219/mes",
+        "founder": { "@id": "https://valkyria.pe/#coach" }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Schema FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"¿Necesito experiencia previa en powerlifting?","acceptedAnswer":{"@type":"Answer","text":"No es necesaria. Trabajamos con principiantes y con atletas intermedios o avanzados. La evaluación inicial ajusta el programa a tu nivel real."}},
+      {"@type":"Question","name":"¿Cómo funciona el seguimiento semanal?","acceptedAnswer":{"@type":"Answer","text":"Cada semana revisamos tu registro — cargas, RPE, sensaciones. Ajustamos en tiempo real. Respuesta garantizada en menos de 24 horas."}},
+      {"@type":"Question","name":"¿Necesito entrenar en un gimnasio específico?","acceptedAnswer":{"@type":"Answer","text":"No. El programa se adapta al equipamiento disponible. La única condición es acceso a sentadilla, press de banca y peso muerto."}},
+      {"@type":"Question","name":"¿Qué pasa si me lesiono o no puedo entrenar una semana?","acceptedAnswer":{"@type":"Answer","text":"Reorganizamos el bloque. El programa no es rígido — adaptamos sin que pierdas el hilo de la temporada."}},
+      {"@type":"Question","name":"¿Puedo cancelar cuando quiero?","acceptedAnswer":{"@type":"Answer","text":"Sí. No hay permanencia mínima ni penalidades."}},
+      {"@type":"Question","name":"¿La primera consulta tiene costo?","acceptedAnswer":{"@type":"Answer","text":"No. La primera consulta es gratuita."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader" aria-hidden="true">
+    <p class="pre-logo"><span>V</span>ALKYRIA</p>
+    <div class="pre-bar"></div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Cursor personalizado -->
+  <div class="cur"     id="cur"  aria-hidden="true"></div>
+  <div class="cur-ring" id="ring" aria-hidden="true"></div>
+
+  <!-- Menú mobile (overlay) -->
+  <nav id="mobileMenu" class="nav-mobile-menu" aria-label="Menú principal" aria-hidden="true">
+    <a href="#metodo"   aria-label="Ir a Método">Método</a>
+    <a href="#coaching" aria-label="Ir a Coaching">Coaching</a>
+    <a href="tienda.html" aria-label="Ir a Tienda">Tienda</a>
+    <a href="#proceso"  aria-label="Ir a Proceso">Proceso</a>
+    <a href="#coaching" class="btn-p" style="margin-top:16px">Quiero coaching →</a>
+    <a href="/login" class="btn-s" style="margin-top:8px">Entrar a la plataforma →</a>
+  </nav>
+
+  <!-- ── NAV ──────────────────────────────────────────────── -->
+  <header>
+    <nav id="nav" aria-label="Navegación principal">
+      <a href="/" class="nav-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#metodo">Método</a></li>
+        <li><a href="#coaching">Coaching</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="#proceso">Proceso</a></li>
+        <li><a href="sobre-mi.html">Sobre mí</a></li>
+      </ul>
+
+      <a href="/login" class="nav-cta" style="background:transparent;border:1px solid rgba(255,69,0,0.4);margin-right:8px" aria-label="Entrar a la plataforma">Entrar →</a>
+      <a href="#coaching" class="nav-cta" aria-label="Quiero coaching">Quiero coaching</a>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section class="hero" aria-label="Inicio">
+    <div class="hero-bg"    aria-hidden="true"></div>
+    <div class="hero-grid"  aria-hidden="true"></div>
+    <div class="hero-vline" aria-hidden="true"></div>
+    <div class="hero-noise" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <p class="eyebrow">Valkyria — Fuerza con argumento</p>
+
+      <h1>
+        NO<br>
+        <span class="o">LEVANTAS</span><br>
+        <span class="ghost">PESO.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Construyes <strong>fuerza real, con ciencia y sin humo</strong>. Periodización individualizada para powerlifting — sin plantillas de internet, sin copiar y pegar.
+      </p>
+
+      <div class="hero-btns">
+        <a href="#coaching" class="btn-p">Empezar ahora →</a>
+        <a href="#proceso"  class="btn-s">Conoce el proceso <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <!-- Stats decorativos (ocultos de lectores de pantalla) -->
+    <aside class="hero-stats" aria-hidden="true">
+      <div>
+        <div class="sn"><span id="s1">0</span>%</div>
+        <div class="sl">Ciencia aplicada</div>
+      </div>
+      <div class="sdiv"></div>
+      <div>
+        <div class="sn"><span id="s2">0</span></div>
+        <div class="sl">Bloques por temporada</div>
+      </div>
+      <div class="sdiv"></div>
+      <div>
+        <div class="sn"><span id="s3">0</span>+</div>
+        <div class="sl">Variables controladas</div>
+      </div>
+    </aside>
+
+    <p class="scroll-hint" aria-hidden="true">
+      <span class="sline"></span>Scroll
+    </p>
+  </section>
+
+  <!-- ── VIDEO ─────────────────────────────────────────────── -->
+  <section class="video-section" id="video" aria-labelledby="title-video">
+    <p class="s-label">En acción</p>
+    <h2 class="s-title reveal" id="title-video">MIRA<br>CÓMO TRABAJO.</h2>
+    <div class="video-wrap reveal">
+      <div class="video-placeholder" aria-label="Video próximamente">
+        <div class="vp-icon" aria-hidden="true">▶</div>
+        <p class="vp-text">Video próximamente</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MÉTODO ────────────────────────────────────────────── -->
+  <section class="method" id="metodo" aria-labelledby="title-metodo">
+    <p class="s-label">Metodología</p>
+    <h2 class="s-title reveal" id="title-metodo">EL SISTEMA<br>QUE FUNCIONA</h2>
+
+    <div class="method-grid">
+      <div class="method-text reveal">
+        <p>La mayoría de programas están diseñados para un <strong>atleta modelo que no existe</strong>. Si tus características no encajan, el programa o te queda corto o te rompe.</p>
+        <p>En Valkyria trabajamos con una <strong>metodología de periodización por bloques</strong> que parte de evaluarte a ti antes de escribir una sola serie. Cada decisión tiene argumento.</p>
+        <p>No hay recetas. Hay <strong>principios aplicados con criterio</strong> a tu realidad: tu biotipo, tu tiempo, tu historial.</p>
+
+        <ol class="pillars" role="list">
+          <li class="pillar reveal" aria-label="Pilar 1: Especificidad dinámica">
+            <div class="pn" aria-hidden="true">01</div>
+            <div class="pi">
+              <div class="pi-name">Especificidad dinámica</div>
+              <div class="pi-desc">Cada ejercicio justificado según tu momento de temporada</div>
+            </div>
+          </li>
+          <li class="pillar reveal" aria-label="Pilar 2: Sobrecarga progresiva">
+            <div class="pn" aria-hidden="true">02</div>
+            <div class="pi">
+              <div class="pi-name">Sobrecarga progresiva</div>
+              <div class="pi-desc">Al final de cada bloque eres más fuerte. Siempre.</div>
+            </div>
+          </li>
+          <li class="pillar reveal" aria-label="Pilar 3: Control de fatiga real">
+            <div class="pn" aria-hidden="true">03</div>
+            <div class="pi">
+              <div class="pi-name">Control de fatiga real</div>
+              <div class="pi-desc">La descarga sale cuando la necesitas, no cada 4 semanas</div>
+            </div>
+          </li>
+          <li class="pillar reveal" aria-label="Pilar 4: Individualización total">
+            <div class="pn" aria-hidden="true">04</div>
+            <div class="pi">
+              <div class="pi-name">Individualización total</div>
+              <div class="pi-desc">Tu programa no es de nadie más</div>
+            </div>
+          </li>
+          <li class="pillar reveal" aria-label="Pilar 5: Variabilidad con argumento">
+            <div class="pn" aria-hidden="true">05</div>
+            <div class="pi">
+              <div class="pi-name">Variabilidad con argumento</div>
+              <div class="pi-desc">Atacamos tus eslabones débiles con ejercicios que tienen sentido</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="method-visual reveal">
+        <div class="method-card" role="figure" aria-label="Estructura de temporada — Valkyria">
+          <p class="mc-label">Estructura de temporada — Valkyria</p>
+          <div class="blocks">
+            <div class="brow">
+              <div class="bdot" style="background:#4FC3F7" aria-hidden="true"></div>
+              <div class="bname">Hipertrofia</div>
+              <div class="bwk">4–12 sem</div>
+              <div class="bpct">60–80%</div>
+            </div>
+            <div class="brow">
+              <div class="bdot" style="background:#81C784" aria-hidden="true"></div>
+              <div class="bname">Fuerza base</div>
+              <div class="bwk">4–8 sem</div>
+              <div class="bpct">80–100%</div>
+            </div>
+            <div class="brow">
+              <div class="bdot" style="background:#FF6B35" aria-hidden="true"></div>
+              <div class="bname">Volumen</div>
+              <div class="bwk">4–8 sem</div>
+              <div class="bpct">70–85%</div>
+            </div>
+            <div class="brow">
+              <div class="bdot" style="background:#CE93D8" aria-hidden="true"></div>
+              <div class="bname">Peaking</div>
+              <div class="bwk">3–12 sem</div>
+              <div class="bpct">85–100%</div>
+            </div>
+            <div class="brow">
+              <div class="bdot" style="background:#FFD700" aria-hidden="true"></div>
+              <div class="bname">Tapering</div>
+              <div class="bwk">5–14 días</div>
+              <div class="bpct">100%</div>
+            </div>
+            <div class="brow" style="border-left:2px solid #FFD700; background:rgba(255,215,0,0.04)">
+              <div class="bdot" style="background:#FF4500" aria-hidden="true"></div>
+              <div class="bname" style="color:#FFD700; font-weight:800">COMPETICIÓN</div>
+              <div class="bwk" style="color:#FFD700">Día D</div>
+              <div class="bpct" style="color:#FFD700">RM</div>
+            </div>
+          </div>
+          <p class="block-note">⚠ SQ / BP / DL pueden estar en bloques distintos al mismo tiempo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COACHING ──────────────────────────────────────────── -->
+  <section class="coaching" id="coaching" aria-labelledby="title-coaching">
+    <p class="s-label">Coaching</p>
+    <h2 class="s-title reveal" id="title-coaching">UNA OFERTA.<br>SIN VUELTAS.</h2>
+
+    <div class="coaching-inner">
+      <div class="coaching-pitch reveal">
+        <p>No tengo tres planes para que elijas el más barato. Tengo <strong>un solo servicio</strong> — hecho bien, con toda la atención que tu progreso merece.</p>
+        <p>Si vas a competir o quieres levantar más peso con criterio real, esto es para ti. Si buscas un template genérico, hay miles gratis en internet.</p>
+
+        <blockquote class="quote">
+          <p>"El entrenamiento se adapta al atleta — no al revés. Tu programa tiene que tener tu nombre, no el de nadie más."</p>
+          <cite>— Filosofía Valkyria</cite>
+        </blockquote>
+
+        <p>Trabajo con <strong>cupos limitados por mes</strong>. La calidad del coaching depende de la atención individual y no voy a comprometer eso.</p>
+      </div>
+
+      <div class="offer-card reveal" role="region" aria-label="Oferta de coaching">
+        <span class="offer-badge">Única oferta disponible</span>
+        <div class="cupos-alert">
+          <span class="cupos-dot" aria-hidden="true"></span>
+          Solo <strong><span data-cupos>3</span> cupos</strong> disponibles este mes
+        </div>
+        <h3 class="offer-name">COACHING VALKYRIA</h3>
+        <p class="offer-tagline">Periodización por bloques · Seguimiento semanal · Metodología individualizada</p>
+
+        <div class="offer-price" aria-label="Precio: S/ 219 por mes">
+          <span class="cs">S/</span>
+          <span class="amount" data-coaching-price>219</span>
+          <span class="period">/mes</span>
+        </div>
+
+        <ul class="offer-features" aria-label="Qué incluye">
+          <li>Evaluación inicial completa del atleta</li>
+          <li>Periodización por bloques 100% personalizada</li>
+          <li>Análisis de video de técnica (ilimitado)</li>
+          <li>Seguimiento semanal activo con ajustes en tiempo real</li>
+          <li>Periodización cibernética (RPE / RIR)</li>
+          <li>Selección de ejercicios según tus debilidades</li>
+          <li>Registro y seguimiento en plataforma propia</li>
+          <li>Canal de comunicación directa (respuesta 24h)</li>
+          <li>Preparación y estrategia para competición</li>
+        </ul>
+
+        <a href="https://wa.me/51955577054?text=Hola%2C%20quiero%20info%20sobre%20el%20coaching%20Valkyria" class="offer-btn" target="_blank" rel="noopener noreferrer">
+          Escribime por WhatsApp →
+        </a>
+        <p class="offer-note">Primera consulta sin costo · Sin permanencia mínima</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BANDA DE CONFIANZA ───────────────────────────────── -->
+  <div class="trust-band" aria-hidden="true">
+    <div class="tb-item"><span class="tb-n" id="stat-atletas">—</span><span class="tb-l">Atletas activos</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-item"><span class="tb-n" id="stat-sesiones">—</span><span class="tb-l">Sesiones este mes</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-item"><span class="tb-n">&lt; 24h</span><span class="tb-l">Tiempo de respuesta</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-item"><span class="tb-n" id="stat-cupos">—</span><span class="tb-l">Cupos disponibles</span></div>
+    <div class="tb-sep"></div>
+    <div class="tb-item"><span class="tb-n">Lima</span><span class="tb-l">Perú · Online</span></div>
+  </div>
+
+  <!-- ── PROCESO ───────────────────────────────────────────── -->
+  <section class="process" id="proceso" aria-labelledby="title-proceso">
+    <p class="s-label">Cómo funciona</p>
+    <h2 class="s-title reveal" id="title-proceso">4 PASOS.<br>UN RESULTADO.</h2>
+
+    <ol class="process-steps" role="list">
+      <li class="step reveal">
+        <div class="step-n" aria-hidden="true">01</div>
+        <h3 class="step-t">Evaluación</h3>
+        <p class="step-d">Analizamos tu perfil completo: nivel, biotipo, lesiones, tiempo disponible. Nada se asume.</p>
+      </li>
+      <li class="step reveal">
+        <div class="step-n" aria-hidden="true">02</div>
+        <h3 class="step-t">Planificación</h3>
+        <p class="step-d">Diseñamos la temporada completa: qué bloque, cuántas semanas, qué ejercicios. Con argumento.</p>
+      </li>
+      <li class="step reveal">
+        <div class="step-n" aria-hidden="true">03</div>
+        <h3 class="step-t">Ejecución</h3>
+        <p class="step-d">Seguimiento semanal. Ajustamos en tiempo real según tus sensaciones y progresión real.</p>
+      </li>
+      <li class="step reveal">
+        <div class="step-n" aria-hidden="true">04</div>
+        <h3 class="step-t">Competición</h3>
+        <p class="step-d">Tapering, estrategia de intentos, manejo del pesaje. Llegás el día D en tu mejor estado.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────── -->
+  <section class="faq" id="faq" aria-labelledby="title-faq">
+    <p class="s-label">Preguntas frecuentes</p>
+    <h2 class="s-title reveal" id="title-faq">LO QUE<br>PREGUNTAS.</h2>
+
+    <div class="faq-list">
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿Necesito experiencia previa en powerlifting?</summary>
+        <p class="faq-a">No es necesaria. Trabajamos con principiantes que quieren aprender desde cero y con atletas intermedios o avanzados que buscan afinar su rendimiento. La evaluación inicial ajusta el programa a tu nivel real.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿Cómo funciona el seguimiento semanal?</summary>
+        <p class="faq-a">Cada semana revisamos tu registro — cargas, RPE, sensaciones. Si algo no va según lo planeado, ajustamos en tiempo real. La comunicación es por canal directo con respuesta garantizada en menos de 24 horas.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿Necesito entrenar en un gimnasio específico?</summary>
+        <p class="faq-a">No. El programa se adapta al equipamiento que tienes disponible. La única condición es acceso a los tres movimientos del powerlifting: sentadilla, press de banca y peso muerto.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿Qué pasa si me lesiono o no puedo entrenar una semana?</summary>
+        <p class="faq-a">Reorganizamos el bloque. El programa no es rígido — si pierdes días o semanas por lesión, viaje o cualquier otra razón, adaptamos sin que pierdas el hilo de la temporada.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿Puedo cancelar cuando quiero?</summary>
+        <p class="faq-a">Sí. No hay permanencia mínima ni penalidades. La relación continúa mientras los dos la valoremos.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-q">¿La primera consulta tiene costo?</summary>
+        <p class="faq-a">No. La primera consulta es gratuita — evaluamos tu situación, te cuento cómo trabajo y vemos si hay fit. Si decides arrancar, perfecto. Si no, sin drama.</p>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ── INSTAGRAM ───────────────────────────────────────────── -->
+  <section class="instagram-section" aria-labelledby="title-ig">
+    <p class="s-label">Instagram</p>
+    <h2 class="s-title reveal" id="title-ig">SÍGUENOS<br>EN IG.</h2>
+    <p class="ig-handle reveal">@valkyria.pe</p>
+    <div class="ig-placeholder reveal" aria-label="Feed de Instagram próximamente">
+      Feed de Instagram — próximamente
+    </div>
+    <a href="#" class="btn-s reveal" target="_blank" rel="noopener noreferrer">
+      Ver perfil completo <span class="arr" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <!-- ── APP PREVIEW ──────────────────────────────────────── -->
+  <style>
+    .app-preview { padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+    .ap-header { text-align: center; margin-bottom: 60px; }
+    .ap-header .s-sub { color: var(--gray); max-width: 480px; margin: 12px auto 0; font-size: .95rem; line-height: 1.6; }
+
+    .ap-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 720px) { .ap-stage { grid-template-columns: 1fr; } }
+
+    /* ── Teléfono (atleta) ── */
+    .ap-phone {
+      background: #101010;
+      border: 1px solid #222;
+      border-radius: 28px;
+      padding: 28px 20px 24px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .ap-phone::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 6px; background: #1a1a1a; border-radius: 0 0 8px 8px;
+    }
+    .ap-p-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .ap-p-logo { font-family: var(--font-d); color: var(--orange); font-size: 1rem; letter-spacing: .15em; }
+    .ap-p-greet { font-size: .72rem; color: var(--gray); }
+
+    .ap-streak-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    .ap-stat-chip {
+      flex: 1; background: #161616; border: 1px solid #222; border-radius: 14px;
+      padding: 12px 10px; text-align: center;
+    }
+    .ap-sc-n { display: block; font-family: var(--font-d); font-size: 1.5rem; color: var(--white); letter-spacing: .05em; }
+    .ap-sc-l { display: block; font-size: .62rem; color: var(--gray); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+    .ap-sc-n.orange { color: var(--orange); }
+
+    .ap-session-card { background: #161616; border: 1px solid #252525; border-radius: 18px; padding: 16px; }
+    .ap-sc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .ap-sc-title { font-size: .78rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: .06em; }
+    .ap-sc-badge { font-size: .58rem; font-weight: 700; background: rgba(255,69,0,.15); color: var(--orange); border: 1px solid rgba(255,69,0,.3); padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .06em; }
+
+    .ap-ex { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #1e1e1e; }
+    .ap-ex:last-child { border-bottom: none; padding-bottom: 0; }
+    .ap-ex-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+    .ap-ex-dot.dim { background: #333; }
+    .ap-ex-info { flex: 1; }
+    .ap-ex-name { font-size: .8rem; font-weight: 600; color: var(--white); display: block; }
+    .ap-ex-meta { font-size: .68rem; color: var(--gray); margin-top: 2px; }
+    .ap-ex-kg { font-family: var(--font-d); font-size: 1.05rem; color: var(--white); letter-spacing: .03em; }
+    .ap-ex.dimmed .ap-ex-name, .ap-ex.dimmed .ap-ex-kg { color: #444; }
+    .ap-ex.dimmed .ap-ex-meta { color: #333; }
+
+    /* ── Panel coach (desktop) ── */
+    .ap-coach { display: flex; flex-direction: column; gap: 14px; }
+
+    .ap-card {
+      background: #101010; border: 1px solid #1e1e1e;
+      border-radius: 18px; padding: 20px;
+    }
+    .ap-card-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gray); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .ap-card-label span { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); display: inline-block; }
+
+    .ap-ai-text { font-size: .82rem; color: #bbb; line-height: 1.55; margin-bottom: 14px; }
+    .ap-ai-actions { display: flex; gap: 8px; }
+    .ap-ai-accept { flex: 1; padding: 8px; border-radius: 10px; background: rgba(255,69,0,.15); border: 1px solid rgba(255,69,0,.4); color: var(--orange); font-size: .72rem; font-weight: 700; cursor: default; }
+    .ap-ai-reject  { padding: 8px 14px; border-radius: 10px; background: transparent; border: 1px solid #252525; color: #555; font-size: .72rem; cursor: default; }
+
+    .ap-chart { margin-top: 4px; }
+    .ap-bars-wrap { display: flex; align-items: flex-end; gap: 5px; height: 60px; }
+    .ap-bar-col { flex: 1; background: #1e1e1e; border-radius: 4px 4px 0 0; transition: height .3s; }
+    .ap-bar-col.hi { background: var(--orange); }
+    .ap-bar-weeks { display: flex; gap: 5px; margin-top: 4px; }
+    .ap-bar-weeks span { flex: 1; text-align: center; font-size: .58rem; color: #444; }
+    .ap-pr-tag { display: inline-block; margin-top: 10px; font-size: .72rem; color: #4ade80; background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.2); padding: 4px 10px; border-radius: 20px; }
+
+    .ap-athlete-row { display: flex; flex-direction: column; gap: 8px; }
+    .ap-athlete { display: flex; align-items: center; gap: 10px; }
+    .ap-av { width: 32px; height: 32px; border-radius: 50%; background: #1e1e1e; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; color: var(--orange); border: 1px solid #2a2a2a; flex-shrink: 0; }
+    .ap-at-info { flex: 1; }
+    .ap-at-name { font-size: .8rem; font-weight: 600; color: var(--white); }
+    .ap-at-meta { font-size: .65rem; color: var(--gray); margin-top: 1px; }
+    .ap-at-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+    .ap-at-dot.pending { background: #facc15; }
+
+    .ap-cta-block { text-align: center; margin-top: 56px; }
+    .ap-cta-sub { font-size: .8rem; color: var(--gray); margin-top: 10px; }
+  </style>
+
+  <section class="app-preview">
+    <div class="ap-header">
+      <p class="s-label reveal">La plataforma en acción</p>
+      <h2 class="s-title reveal" id="title-preview">Así se ve por dentro</h2>
+      <p class="s-sub reveal">Esto es lo que ven tus atletas cada vez que abren Valkyria. Seguimiento completo, sesión a sesión, en tiempo real.</p>
+    </div>
+
+    <div class="ap-stage reveal">
+
+      <!-- Vista atleta (teléfono) -->
+      <div class="ap-phone">
+        <div class="ap-p-nav">
+          <span class="ap-p-logo">VALKYRIA</span>
+          <span class="ap-p-greet">Hola, atleta 👋</span>
+        </div>
+
+        <div class="ap-streak-row">
+          <div class="ap-stat-chip">
+            <span class="ap-sc-n orange">🔥 7</span>
+            <span class="ap-sc-l">Racha días</span>
+          </div>
+          <div class="ap-stat-chip">
+            <span class="ap-sc-n">87%</span>
+            <span class="ap-sc-l">Adherencia</span>
+          </div>
+          <div class="ap-stat-chip">
+            <span class="ap-sc-n">Sem 3</span>
+            <span class="ap-sc-l">del bloque</span>
+          </div>
+        </div>
+
+        <div class="ap-session-card">
+          <div class="ap-sc-header">
+            <span class="ap-sc-title">Sesión de hoy</span>
+            <span class="ap-sc-badge">Fuerza base</span>
+          </div>
+
+          <div class="ap-ex">
+            <div class="ap-ex-dot"></div>
+            <div class="ap-ex-info">
+              <span class="ap-ex-name">Sentadilla</span>
+              <span class="ap-ex-meta">5 × 3 · RPE 8 · RIR 2</span>
+            </div>
+            <span class="ap-ex-kg">127.5 kg</span>
+          </div>
+          <div class="ap-ex">
+            <div class="ap-ex-dot"></div>
+            <div class="ap-ex-info">
+              <span class="ap-ex-name">Press Banca</span>
+              <span class="ap-ex-meta">4 × 4 · RPE 7.5 · RIR 2-3</span>
+            </div>
+            <span class="ap-ex-kg">82.5 kg</span>
+          </div>
+          <div class="ap-ex dimmed">
+            <div class="ap-ex-dot dim"></div>
+            <div class="ap-ex-info">
+              <span class="ap-ex-name">Peso Muerto</span>
+              <span class="ap-ex-meta">3 × 3 · RPE 8.5 · RIR 1-2</span>
+            </div>
+            <span class="ap-ex-kg">152.5 kg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista coach (panel) -->
+      <div class="ap-coach">
+
+        <div class="ap-card">
+          <div class="ap-card-label"><span></span>Progreso · Sentadilla 1RM est.</div>
+          <div class="ap-chart">
+            <div class="ap-bars-wrap">
+              <div class="ap-bar-col" style="height:38%"></div>
+              <div class="ap-bar-col" style="height:52%"></div>
+              <div class="ap-bar-col" style="height:61%"></div>
+              <div class="ap-bar-col" style="height:70%"></div>
+              <div class="ap-bar-col" style="height:80%"></div>
+              <div class="ap-bar-col" style="height:91%"></div>
+              <div class="ap-bar-col hi" style="height:100%"></div>
+            </div>
+            <div class="ap-bar-weeks">
+              <span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>S7</span>
+            </div>
+          </div>
+          <span class="ap-pr-tag">+15 kg en 7 semanas</span>
+        </div>
+
+        <div class="ap-card">
+          <div class="ap-card-label"><span></span>Equipo activo</div>
+          <div class="ap-athlete-row">
+            <div class="ap-athlete">
+              <div class="ap-av">A</div>
+              <div class="ap-at-info">
+                <div class="ap-at-name">Atleta A</div>
+                <div class="ap-at-meta">Sesión completada · Sem 3 Fuerza</div>
+              </div>
+              <div class="ap-at-dot"></div>
+            </div>
+            <div class="ap-athlete">
+              <div class="ap-av">F</div>
+              <div class="ap-at-info">
+                <div class="ap-at-name">Atleta B</div>
+                <div class="ap-at-meta">Pendiente hoy · Sem 3 Fuerza</div>
+              </div>
+              <div class="ap-at-dot pending"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ap-cta-block reveal">
+      <a href="/login" class="btn-p">Entrar a la plataforma →</a>
+      <p class="ap-cta-sub">Acceso por invitación directa de tu coach</p>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIOS ───────────────────────────────────────── -->
+  <section class="social-proof" aria-labelledby="title-testimonios" style="text-align:center;padding:80px 32px;">
+    <p class="s-label">Resultados</p>
+    <h2 class="s-title reveal" id="title-testimonios">LO QUE<br>DICEN.</h2>
+    <div class="reveal" style="margin-top:48px;display:inline-block;border:1px solid #2a2a2a;padding:40px 56px;max-width:480px;width:100%">
+      <p style="font-family:var(--font-display);font-size:48px;color:#2a2a2a;line-height:1;margin-bottom:16px">""</p>
+      <p style="font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:24px">
+        Estamos acumulando los primeros resultados reales.<br>Pronto aquí van a estar las historias de nuestros atletas.
+      </p>
+      <p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#3a3a3a">Próximamente</p>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ─────────────────────────────────────────── -->
+  <section class="cta-final" aria-labelledby="title-cta">
+    <div class="cta-bg" aria-hidden="true"></div>
+    <p class="s-label reveal">Empezá hoy</p>
+    <h2 class="s-title reveal" id="title-cta">
+      ¿LISTO PARA<br><span>LEVANTAR</span><br>EN SERIO?
+    </h2>
+    <p class="cta-sub reveal">
+      <strong>Cupos limitados.</strong> No trabajo con más atletas de los que puedo seguir bien. Si hay lugar, arrancamos esta semana.
+    </p>
+    <div class="cta-btns reveal">
+      <a href="#coaching" class="btn-p">
+        Ver el plan →
+      </a>
+    </div>
+    <p class="cta-note reveal">Primera consulta sin costo · Sin permanencia mínima</p>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <a href="/" class="f-logo" aria-label="Valkyria — inicio"><span>V</span>ALKYRIA</a>
+
+    <nav class="f-links" aria-label="Links del footer">
+      <a href="#metodo">Método</a>
+      <a href="#coaching">Coaching</a>
+      <a href="tienda.html">Tienda</a>
+      <a href="#proceso">Proceso</a>
+      <a href="sobre-mi.html">Sobre mí</a>
+    </nav>
+
+    <p class="f-copy">© 2025 Valkyria — Fuerza con argumento. · <a href="herramientas.html" style="color:var(--gray)">Herramientas</a> · <a href="contenido.html" style="color:var(--gray)">Contenido</a> · <a href="politica-privacidad.html" style="color:var(--gray)">Privacidad</a></p>
+
+    <div class="f-social" aria-label="Redes sociales">
+      <a href="#" class="fsoc" aria-label="Instagram de Valkyria">IG</a>
+      <a href="#" class="fsoc" aria-label="TikTok de Valkyria">TK</a>
+      <a href="#" class="fsoc" aria-label="YouTube de Valkyria">YT</a>
+    </div>
+  </footer>
+
+  <!-- Botón flotante WhatsApp -->
+  <a href="https://wa.me/51955577054?text=Hola%2C%20quiero%20info%20sobre%20el%20coaching%20Valkyria"
+     class="fab-wa"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Contactar por WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- Cookie consent -->
+  <div id="cookie-banner" role="dialog" aria-label="Aviso de cookies">
+    <p class="cookie-text"><strong>Cookies</strong> — Este sitio puede usar cookies de analytics en el futuro. Por ahora solo usamos localStorage para recordar tu preferencia.</p>
+    <div class="cookie-btns">
+      <button id="cookie-accept" class="btn-p">Aceptar</button>
+      <button id="cookie-reject" class="cookie-reject">Rechazar</button>
+    </div>
+  </div>
+
+  <!-- Volver arriba -->
+  <button id="back-to-top" aria-label="Volver al inicio de la página">↑</button>
+
+  <!-- Scripts -->
+  <script src="js/main.js" defer></script>
+  <script type="module">
+    import { getTestimonials, getConfig } from './js/api.js';
+
+    // ── Stats en vivo ──────────────────────────────────────────
+    fetch('/api/site/stats')
+      .then(r => r.json())
+      .then(s => {
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('stat-atletas',  s.atletas  > 0 ? s.atletas + '+' : '—');
+        set('stat-sesiones', s.sesiones_mes > 0 ? s.sesiones_mes : '—');
+        set('stat-cupos',    s.cupos    > 0 ? s.cupos : 'Consultar');
+      })
+      .catch(() => {});
+
+    function cardHtml(t, hidden) {
+      const meta = t.role + (t.result ? ' · ' + t.result : '');
+      return `<div class="tcard"${hidden ? ' aria-hidden="true"' : ''}>
+        <p class="ttext">"${t.quote}"</p>
+        <div class="tauthor">
+          <div class="tavatar"${hidden ? '' : ' aria-hidden="true"'}>${t.name[0]}</div>
+          <div><div class="tname">${t.name}</div><div class="tmeta">${meta}</div></div>
+        </div>
+      </div>`;
+    }
+
+    getTestimonials().then(data => {
+      if (!data || !data.length) return;
+      const ticker = document.getElementById('ticker');
+      if (!ticker) return;
+      const originals  = data.map(t => cardHtml(t, false)).join('');
+      const duplicates = data.map(t => cardHtml(t, true)).join('');
+      ticker.innerHTML = originals + duplicates;
+    }).catch(() => {});
+  </script>
+
+</body>
+</html>
